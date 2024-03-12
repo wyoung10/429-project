@@ -14,7 +14,7 @@
                 "${workspaceFolder}"
             ],
             "mainClass": "Project",
-            "preLaunchTask": "Build"
+            "preLaunchTask": "Compile_Main"
         }
     ]
 }
