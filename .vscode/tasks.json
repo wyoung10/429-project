@@ -2,6 +2,16 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Classes_Folder",
+            "command": "if",
+            "type": "shell",
+            "args":["(", "-not", "(Test-Path", "-Path", "classes)", ")", "{", "mkdir", "classes", "}"],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
             "label": "Compile_Classes",
             "command": "javac",
             "type": "shell",
@@ -20,7 +30,10 @@
             "presentation": {
                 "reveal": "always"
             },
-            "group": "build"
+            "group": "build",
+            "dependsOn": [
+                "Classes_Folder"
+            ]
         },
         {
             "label": "Compile_Main",
@@ -33,13 +46,9 @@
             "presentation": {
                 "reveal": "always"
             },
-            "group": "build"
-        },
-        {
-            "label": "Build",
+            "group": "build",
             "dependsOn": [
-                "Compile_Classes",
-                "Compile_Main"
+                "Compile_Classes"
             ]
         }
     ]
