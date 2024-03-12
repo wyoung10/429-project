@@ -6,16 +6,15 @@
     "configurations": [
         {
             "type": "java",
-            "name": "TestAssgn1",
+            "name": "Launch Program",
             "request": "launch",
-            "mainClass": "TestAssgn1",
-            "projectName": "429Assgn1_28a26e83"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
+            "classPaths": [
+                "${workspaceFolder}\\mariadb-java-client-3.0.3.jar",
+                "${workspaceFolder}\\classes",
+                "${workspaceFolder}"
+            ],
+            "mainClass": "Project",
+            "preLaunchTask": "Build"
         }
     ]
 }

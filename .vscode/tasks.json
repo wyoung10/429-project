@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile_Classes",
+            "command": "javac",
+            "type": "shell",
+            "args": [
+                "-d", "'classes'",
+                "-classpath", "'classes'",
+                "userinterface\\*.java",
+                "model\\*.java",
+                "common\\*.java",
+                "database\\*.java",
+                "event\\*.java",
+                "exception\\*.java",
+                "impresario\\*.java",
+                "Utilities\\*.java"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
+            "label": "Compile_Main",
+            "command": "javac",
+            "type": "shell",
+            "args": [
+                "-classpath", "'classes;.'",
+                "Project.java"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": "build"
+        },
+        {
+            "label": "Build",
+            "dependsOn": [
+                "Compile_Classes",
+                "Compile_Main"
+            ]
+        }
+    ]
+}
