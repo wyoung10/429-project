@@ -13,7 +13,7 @@
                 "${workspaceFolder}\\classes",
                 "${workspaceFolder}"
             ],
-            "mainClass": "Project",
+            "mainClass": "ClothesCloset",
             "preLaunchTask": "Compile_Main"
         }
     ]

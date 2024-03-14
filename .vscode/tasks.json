@@ -41,7 +41,7 @@
             "type": "shell",
             "args": [
                 "-classpath", "'classes;.'",
-                "Project.java"
+                "ClothesCloset.java"
             ],
             "presentation": {
                 "reveal": "always"
