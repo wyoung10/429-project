@@ -157,39 +157,39 @@ public class Clerk implements IView, IModel
 		swapToView(currentScene);
 	}
 
-	public static void createAndShowAddArticleTypeView() {
+	private void createAndShowAddArticleTypeView() {
         System.out.println("add article type not implemented");
     }
 
-    public static void createAndShowSearchArticleTypeView(String context) {
+    private void createAndShowSearchArticleTypeView(String context) {
         System.out.println("search article type not implemented");
     }
 
-    public static void createAndShowAddColorView() {
+    private void createAndShowAddColorView() {
         System.out.println("add color not implemented");
     }
 
-    public static void createAndShowSelectColorView(String context) {
+    private void createAndShowSelectColorView(String context) {
         System.out.println("select color not implemented");
     }
 
-    public static void createAndShowAddInventoryView() {
+    private void createAndShowAddInventoryView() {
         System.out.println("add inventory not implemented");
     }
 
-    public static void createAndShowScanBarcodeView(String context) {
+    private void createAndShowScanBarcodeView(String context) {
         System.out.println("scan barcode not implemented");
     }
 
-    public static void createAndShowCheckoutInventoryView() {
+    private void createAndShowCheckoutInventoryView() {
         System.out.println("checkout inventory item not implemented");
     }
 
-    public static void createAndShowListAvailableInventoryView() {
+    private void createAndShowListAvailableInventoryView() {
         System.out.println("list available inventory not implemented");
     }
 
-    public static void createAndShowListCheckedOutInventoryView() {
+    private void createAndShowListCheckedOutInventoryView() {
         System.out.println("list checked out inventory not implemented");
     }
 
