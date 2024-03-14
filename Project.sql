@@ -14,7 +14,7 @@ CREATE TABLE Color (
     status ENUM('Active', 'Inactive') DEFAULT 'Active'
 );
 
-CREATE TABLE Rolodex (
+CREATE TABLE Inventory (
     barcode VARCHAR(50) PRIMARY KEY,
     gender VARCHAR(7),
     size VARCHAR(255),
