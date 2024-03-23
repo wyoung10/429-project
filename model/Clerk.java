@@ -174,7 +174,14 @@ public class Clerk implements IView, IModel
     }
 
     private void createAndShowAddInventoryView() {
-        System.out.println("add inventory not implemented");
+        //System.out.println("add inventory not implemented");
+		Scene currentScene = (Scene)myViews.get("AddInventoryItemView");
+
+		if (currentScene == null){
+			View newView = ViewFactory.createView("AddInventoryItemView", this);
+			currentScene = new Scene(newView);
+			myViews.put("AddInventoryItemView", currentScene);
+		}
     }
 
     private void createAndShowScanBarcodeView(String context) {
