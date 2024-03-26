@@ -66,7 +66,7 @@ public class AddInventoryItemView extends View {
      * create Title text
      */
     private Node createTitle() {
-		Text titleText = new Text("Choose Transaction:");
+		Text titleText = new Text("Inventory Item Info:");
 		titleText.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 		titleText.setTextAlignment(TextAlignment.CENTER);
 		titleText.setFill(Color.DARKGREEN);
@@ -87,9 +87,6 @@ public class AddInventoryItemView extends View {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		
-		VBox vbox = new VBox(10);
-		vbox.setAlignment(Pos.CENTER);
 
         //-----Barcode Label and Field-----
         Text barcodeLabel = new Text("Barcode: ");
@@ -240,8 +237,8 @@ public class AddInventoryItemView extends View {
         buttons.getChildren().add(cancelButton);
 
         //Add form and buttons
-        vbox.getChildren().add(grid);
-        vbox.getChildren().add(buttons);        
+        form.getChildren().add(grid);
+        form.getChildren().add(buttons);        
 
         return form;
     

@@ -9,6 +9,9 @@ public class ViewFactory {
 	{
 		if (viewName.equals("ClerkView")) {
 			return new ClerkView(model);
+		} else 
+		if (viewName.equals("AddInventoryItemView")){
+			return new AddInventoryItemView(model);
 		}
 		return null;
 	}
