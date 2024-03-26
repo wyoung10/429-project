@@ -1,10 +1,13 @@
 //Specify package
 package userinterface;
 
+import java.util.Observable;
 // system imports
 import java.util.Properties;
 
 import javafx.event.Event;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -22,6 +25,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.*;
 import model.InventoryItem;
+import javafx.scene.Scene;
+import javafx.scene.input.*;
+
 // project imports
 import impresario.IModel;
 
@@ -225,6 +231,57 @@ public class AddInventoryItemView extends View {
         emailField.setEditable(true);
         grid.add(emailField, 11, 1);
 
+        /*barcodeField upon losing focus:
+         * -verify user input
+         * -parse gender, article id, and primary color
+         * -all other textfields will become editable
+         */
+        barcodeField.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
+            {               
+                //String from barcode field
+                String barcodeTempString = barcodeField.getText();
+                
+                /*Try block will check if barcode was numeric. If so:
+                 * -Verify input is 8 digits
+                 * -Parse input for gender, article, color
+                 */
+                try {
+                    int barcodeInt = Integer.parseInt(barcodeTempString);
+
+                    //Check that input is 8 digits
+                    if (barcodeTempString.length() != 8){
+                        barcodeField.setText("Barcode was incorrect length. Please try again");                    
+                    } else {
+                        //parse barcode for info
+                        char[] barcodeArray = barcodeTempString.toCharArray();
+
+                        //Determine gender from first digit
+                        char genderChar = barcodeArray[0];
+                        if (genderChar == '0'){
+                            genderField.setText("M");
+                            genderField.setEditable(true);
+                        } else
+                        if (genderChar == '1'){
+                            genderField.setText("W");
+                            genderField.setEditable(true);
+                        } else {
+                            genderField.setText("Barcode was incorrect");
+                            genderField.setEditable(false);
+                        };
+
+                        
+
+                    }
+                } catch (NumberFormatException exc){
+                    barcodeField.setText("Barcode should be numerical");
+                }//End trycatch block                
+            }//End change            
+        });//End focusProperty
+
+        //====BUTTONS=====
         //Setup separate Hbox for submit and cancel button
         HBox buttons = new HBox(10);
         buttons.setAlignment(Pos.BOTTOM_CENTER);

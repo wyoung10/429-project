@@ -20,7 +20,7 @@ import userinterface.ViewFactory;
 public class InventoryItem extends EntityBase implements IView {
     
     //Declare string of table name to reference
-    private static final String myTableName = "Rolodex";
+    private static final String myTableName = "Inventory";
 
     //Properties Object declared
     protected Properties dependencies;
