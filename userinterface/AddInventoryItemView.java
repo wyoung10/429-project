@@ -96,13 +96,13 @@ public class AddInventoryItemView extends View {
 
         TextField barcodeField = new TextField();
         barcodeField.setEditable(true);
-        grid.add(barcodeField, 0, 1);
+        grid.add(barcodeField, 1, 0);
 
         //-----Gender Label and Field-----
         Text genderLabel = new Text("Gender: ");
         genderLabel.setWrappingWidth(150);
         genderLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(genderLabel, 1, 0);
+        grid.add(genderLabel, 0, 1);
         
         TextField genderField = new TextField();
         genderField.setEditable(true);
@@ -112,101 +112,101 @@ public class AddInventoryItemView extends View {
         Text articleLabel = new Text("Article Type: ");
         articleLabel.setWrappingWidth(150);
         articleLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(articleLabel, 2, 0);
+        grid.add(articleLabel, 0, 2);
 
         TextField articleField = new TextField();
         articleField.setEditable(true);
-        grid.add(articleField, 2, 1);
+        grid.add(articleField, 1, 2);
 
         //-----Primary Color Label and Field-----
         Text colorLabel = new Text("Primary Color: ");
         colorLabel.setWrappingWidth(150);
         colorLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(colorLabel, 3, 0);
+        grid.add(colorLabel, 0, 3);
 
         TextField colorField = new TextField();
         colorField.setEditable(true);
-        grid.add(colorField, 3, 1);
+        grid.add(colorField, 1, 3);
 
         //------Color2 Label and Field-----
         Text color2Label = new Text("Secondary Color: ");
         color2Label.setWrappingWidth(150);
         color2Label.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(color2Label, 4, 0);
+        grid.add(color2Label, 0, 4);
 
         TextField color2Field = new TextField();
         color2Field.setEditable(true);
-        grid.add(color2Field, 4, 1);
+        grid.add(color2Field, 1, 4);
 
         //-----Size Label and Field----
         Text sizeLabel = new Text("Size: ");
         sizeLabel.setWrappingWidth(150);
         sizeLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(sizeLabel, 5, 0);
+        grid.add(sizeLabel, 0, 5);
 
         TextField sizeField = new TextField();
         sizeField.setEditable(true);
-        grid.add(sizeField, 5, 1);
+        grid.add(sizeField, 1, 5);
 
         //-----Brand Name Label and Field-----
         Text brandLabel = new Text("Brand: ");
         brandLabel.setWrappingWidth(150);
         brandLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(brandLabel, 6, 0);
+        grid.add(brandLabel, 0, 6);
 
         TextField brandField = new TextField();
         brandField.setEditable(true);
-        grid.add(brandField, 6, 1);
+        grid.add(brandField, 1, 6);
 
         //-----Notes Label and Field-----
         Text notesLabel = new Text("Notes: ");
         notesLabel.setWrappingWidth(150);
         notesLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(notesLabel, 7, 1);
+        grid.add(notesLabel, 0, 7);
 
         TextField notesField = new TextField();
         notesField.setEditable(true);
-        grid.add(notesField, 7, 1);
+        grid.add(notesField, 1, 7);
 
         //-----Donor First Name Label and Field-----
         Text fnameLabel = new Text("Donor First name: ");
         fnameLabel.setWrappingWidth(150);
         fnameLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(fnameLabel, 8, 0);
+        grid.add(fnameLabel, 0, 8);
         
         TextField fnameField = new TextField();
         fnameField.setEditable(true);
-        grid.add(fnameField, 8, 1);
+        grid.add(fnameField, 1, 8);
 
         //-----Donor Last Name Label and Field------
         Text lnameLabel = new Text("Donor Last Name: ");
         lnameLabel.setWrappingWidth(150);
         lnameLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(lnameLabel, 9, 0);
+        grid.add(lnameLabel, 0, 9);
         
         TextField lnameField = new TextField();
         lnameField.setEditable(true);
-        grid.add(lnameField, 9, 1);
+        grid.add(lnameField, 1, 9);
 
         //-----Donor Phone Number Label and Field------
         Text phoneLabel = new Text("Phone Number: ");
         phoneLabel.setWrappingWidth(150);
         phoneLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(phoneLabel, 10, 0);
+        grid.add(phoneLabel, 0, 10);
 
         TextField phoneField = new TextField();
         phoneField.setEditable(true);  
-        grid.add(phoneField, 10, 1);
+        grid.add(phoneField, 1, 10);
 
         //-----Donor Email Label and Field-----
         Text emailLabel = new Text("Email: ");
         emailLabel.setWrappingWidth(150);
         emailLabel.setTextAlignment(TextAlignment.RIGHT);
-        grid.add(emailLabel, 11, 0);
+        grid.add(emailLabel, 0, 11);
 
         TextField emailField = new TextField();
         emailField.setEditable(true);
-        grid.add(emailField, 11, 1);
+        grid.add(emailField, 1, 11);
 
         //Setup separate Hbox for submit and cancel button
         HBox buttons = new HBox(10);
