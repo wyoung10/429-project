@@ -127,6 +127,11 @@ public class Clerk implements IView, IModel
             case "ListCheckedOutInventory":
                 createAndShowListCheckedOutInventoryView();
                 break;
+			//---AddInventoryItem Submit Button---
+			case "AddInventoryItem":
+				//Button takes properties and creates new Iventory item
+				System.out.println("WIP");
+				break;
             default:
                 System.out.println("Invalid key.");
         }

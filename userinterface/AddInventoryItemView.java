@@ -34,6 +34,20 @@ public class AddInventoryItemView extends View {
     //error message
     private MessageView statusLog;
 
+    //GUI Textfield components
+    protected TextField barcodeField;
+    protected TextField genderField;
+    protected TextField articleField;
+    protected TextField colorField;
+    protected TextField color2Field;
+    protected TextField sizeField;
+    protected TextField brandField;
+    protected TextField notesField;
+    protected TextField fnameField;
+    protected TextField lnameField;
+    protected TextField phoneField;
+    protected TextField emailField;
+
     /*CONSTRUCTOR
      * Takes model Object
      */
@@ -97,7 +111,7 @@ public class AddInventoryItemView extends View {
         barcodeLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(barcodeLabel, 0, 0);
 
-        TextField barcodeField = new TextField();
+        barcodeField = new TextField();
         barcodeField.setEditable(true);
         grid.add(barcodeField, 0, 1);
 
@@ -107,7 +121,7 @@ public class AddInventoryItemView extends View {
         genderLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(genderLabel, 1, 0);
         
-        TextField genderField = new TextField();
+        genderField = new TextField();
         genderField.setEditable(true);
         grid.add(genderField, 1, 1);
 
@@ -117,7 +131,7 @@ public class AddInventoryItemView extends View {
         articleLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(articleLabel, 2, 0);
 
-        TextField articleField = new TextField();
+        articleField = new TextField();
         articleField.setEditable(true);
         grid.add(articleField, 2, 1);
 
@@ -127,7 +141,7 @@ public class AddInventoryItemView extends View {
         colorLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(colorLabel, 3, 0);
 
-        TextField colorField = new TextField();
+        colorField = new TextField();
         colorField.setEditable(true);
         grid.add(colorField, 3, 1);
 
@@ -137,7 +151,7 @@ public class AddInventoryItemView extends View {
         color2Label.setTextAlignment(TextAlignment.RIGHT);
         grid.add(color2Label, 4, 0);
 
-        TextField color2Field = new TextField();
+        color2Field = new TextField();
         color2Field.setEditable(true);
         grid.add(color2Field, 4, 1);
 
@@ -147,7 +161,7 @@ public class AddInventoryItemView extends View {
         sizeLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(sizeLabel, 5, 0);
 
-        TextField sizeField = new TextField();
+        sizeField = new TextField();
         sizeField.setEditable(true);
         grid.add(sizeField, 5, 1);
 
@@ -157,7 +171,7 @@ public class AddInventoryItemView extends View {
         brandLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(brandLabel, 6, 0);
 
-        TextField brandField = new TextField();
+        brandField = new TextField();
         brandField.setEditable(true);
         grid.add(brandField, 6, 1);
 
@@ -167,7 +181,7 @@ public class AddInventoryItemView extends View {
         notesLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(notesLabel, 7, 1);
 
-        TextField notesField = new TextField();
+        notesField = new TextField();
         notesField.setEditable(true);
         grid.add(notesField, 7, 1);
 
@@ -177,7 +191,7 @@ public class AddInventoryItemView extends View {
         fnameLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(fnameLabel, 8, 0);
         
-        TextField fnameField = new TextField();
+        fnameField = new TextField();
         fnameField.setEditable(true);
         grid.add(fnameField, 8, 1);
 
@@ -187,7 +201,7 @@ public class AddInventoryItemView extends View {
         lnameLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(lnameLabel, 9, 0);
         
-        TextField lnameField = new TextField();
+        lnameField = new TextField();
         lnameField.setEditable(true);
         grid.add(lnameField, 9, 1);
 
@@ -197,7 +211,7 @@ public class AddInventoryItemView extends View {
         phoneLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(phoneLabel, 10, 0);
 
-        TextField phoneField = new TextField();
+        phoneField = new TextField();
         phoneField.setEditable(true);  
         grid.add(phoneField, 10, 1);
 
@@ -207,7 +221,7 @@ public class AddInventoryItemView extends View {
         emailLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(emailLabel, 11, 0);
 
-        TextField emailField = new TextField();
+        emailField = new TextField();
         emailField.setEditable(true);
         grid.add(emailField, 11, 1);
 
@@ -252,6 +266,41 @@ public class AddInventoryItemView extends View {
      *  WIP
      */
     public void processSubAction(Event e){
+        //Validate user input
+
+        //Parse barcode for article, gender, primary color
+
+        //Convert input to strings
+        String barcodeString = barcodeField.getText();
+        String genderString = genderField.getText();
+        String articleString = articleField.getText();
+        String colorString = colorField.getText();
+        String color2String = colorField.getText();
+        String sizeString = sizeField.getText();
+        String brandString = brandField.getText();
+        String notesString = notesField.getText();
+        String fnameString = fnameField.getText();
+        String lnameString = lnameField.getText();
+        String phoneString = phoneField.getText();
+        String emailString = emailField.getText();
+
+        //Create properties and keys
+        Properties insertProperties = new Properties();
+        insertProperties.setProperty("barcode", barcodeString);
+        insertProperties.setProperty("gender", genderString);
+        insertProperties.setProperty("size", sizeString);
+        insertProperties.setProperty("articleTypeId", articleString);
+        insertProperties.setProperty("color1Id", colorString);
+        insertProperties.setProperty("color2Id", color2String);
+        insertProperties.setProperty("brand", brandString);
+        insertProperties.setProperty("notes", notesString);
+        insertProperties.setProperty("donorLastName", lnameString);
+        insertProperties.setProperty("donorFirstName", fnameString);
+        insertProperties.setProperty("donorPhone", phoneString);
+        insertProperties.setProperty("donorEmail", emailString);
+
+        //Call Clerk stateChangeRequest Method to create InventoryItem
+        myModel.stateChangeRequest("AddInventoryItem", insertProperties);
 
     }
 
