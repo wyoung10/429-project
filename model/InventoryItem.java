@@ -106,10 +106,12 @@ public class InventoryItem extends EntityBase implements IView {
     }
 
 
-    @Override
+    //Get property method
     public Object getState(String key) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getState'");
+        if (key.equals("UpdateStatusMessage") == true)
+            return updateStatusMessage;
+
+        return persistentState.getProperty(key);
     }
 
 

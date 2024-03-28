@@ -1,6 +1,7 @@
 //Specify package
 package userinterface;
 
+import java.sql.SQLException;
 import java.util.Observable;
 // system imports
 import java.util.Properties;
@@ -256,25 +257,43 @@ public class AddInventoryItemView extends View {
                         barcodeField.setText("Barcode was incorrect length. Please try again");                    
                     } else {
                         //parse barcode for info
-                        char[] barcodeArray = barcodeTempString.toCharArray();
+                        //char[] barcodeArray = barcodeTempString.toCharArray();
 
                         //Determine gender from first digit
-                        char genderChar = barcodeArray[0];
-                        if (genderChar == '0'){
+                        //char genderChar = barcodeArray[0];
+                        String genderString = barcodeTempString.substring(0, 0);
+                        if (genderString == "0"){
                             genderField.setText("M");
                             genderField.setEditable(true);
                         } else
-                        if (genderChar == '1'){
+                        if (genderString == "1"){
                             genderField.setText("W");
                             genderField.setEditable(true);
                         } else {
                             genderField.setText("Barcode was incorrect");
                             genderField.setEditable(false);
-                        };
+                        };//End gender verification
 
-                        
+                        //Determine article type from next two digits
+                        String articleBarPrefix = barcodeTempString.substring(1, 3);
+                        try {
+                            Article article = new Article(articleBarPrefix);
+                            articleField.setText(article.getState("name"));
+                            articleField.setEditable(true);
+                        } catch (SQLException exc) {
+                            
+                        }//End article verification
 
-                    }
+                        //Determine color1 from next two digits
+                        String colorBarPrefix = barcodeTempString.substring(3, 5);
+                        try {
+                            Color color = new Color(colorBarPrefix);
+                            colorField.setText(color.getState("name"));
+                            colorField.setEditable(true);
+                        } catch (SQLException exc) {
+
+                        }//End color verification
+                    }//End if else for barcode parse
                 } catch (NumberFormatException exc){
                     barcodeField.setText("Barcode should be numerical");
                 }//End trycatch block                
