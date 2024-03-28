@@ -5,12 +5,15 @@ import impresario.IModel;
 //==============================================================================
 public class ViewFactory {
 
-	public static View createView(String viewName, IModel model)
-	{
-		if (viewName.equals("ClerkView")) {
-			return new ClerkView(model);
+	public static View createView(String viewName, IModel model) {
+		switch(viewName) {
+			case "ClerkView":
+				return new ClerkView(model);
+			case "ColorCollectionView":
+				return new ColorCollectionView(model);
+			default:
+				return null;
 		}
-		return null;
 	}
 
 
