@@ -11,6 +11,8 @@ public class ViewFactory {
 				return new ClerkView(model);
 			case "ColorCollectionView":
 				return new ColorCollectionView(model);
+			case "ModifyColorView":
+				return new ModifyColorView(model);
 			default:
 				return null;
 		}

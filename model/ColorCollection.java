@@ -9,11 +9,11 @@ public class ColorCollection extends EntityBase {
     private Vector<Color> colorList;
     public ColorCollection() {
         super(myTableName);
-        colorList = new Vector<Color>();
     }
 
     public void getColors() throws SQLException {
-        String query = "SELECT * FROM " + myTableName;
+        colorList = new Vector<Color>();
+        String query = "SELECT * FROM " + myTableName + " WHERE status = \"Active\"";
         Vector<Properties> result = getSelectQueryResult(query);
         if (result != null) {
 			for (int i = 0; i < result.size(); i++) {
@@ -43,6 +43,19 @@ public class ColorCollection extends EntityBase {
 		else if (key.equals("ColorCollection"))
 			return this;
 		return null;
+	}
+
+    public Color getColorWithId(String colorId) {
+		Color retValue = null;
+		for (int i = 0; i < colorList.size(); i++) {
+			Color nextColor = colorList.elementAt(i);
+			String nextId = (String)nextColor.getState("id");
+			if (nextId.equals(colorId) == true) {
+				retValue = nextColor;
+				return retValue;
+			}
+		}
+		return retValue;
 	}
 
     public void stateChangeRequest(String key, Object value) {

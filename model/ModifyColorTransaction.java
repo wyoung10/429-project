@@ -17,13 +17,10 @@ import userinterface.ViewFactory;
 /** The class containing the ModifyColorTransaction for the ATM application */
 //==============================================================
 public class ModifyColorTransaction extends Transaction {
-	private String transactionErrorMessage = "";
+	private String transactionStatusMessage = "";
 
 	private ColorCollection colorCollection;
-    private String id;
-    private String description;
-    private String barcodePrefix;
-    private String alphaCode;
+    private Color selectedColor;
 
 	public ModifyColorTransaction() throws Exception {
 		super();
@@ -41,9 +38,8 @@ public class ModifyColorTransaction extends Transaction {
 	//----------------------------------------------------------
 	protected void setDependencies() {
 		dependencies = new Properties();
-		dependencies.setProperty("DoModifyColor", "TransactionError");
-		dependencies.setProperty("CancelModifyColor", "CancelTransaction");
-		dependencies.setProperty("OK", "CancelTransaction");
+        dependencies.setProperty("DoModifyColor", "TransactionStatus");
+		dependencies.setProperty("CancelColorCollection", "CancelTransaction");
 
 		myRegistry.setDependencies(dependencies);
 	}
@@ -54,27 +50,30 @@ public class ModifyColorTransaction extends Transaction {
 	 */
 	//----------------------------------------------------------
 	public void processTransaction(Properties props) {
-		id = props.getProperty("id");
-        description = props.getProperty("description");
-        barcodePrefix = props.getProperty("barcodePrefix");
-        alphaCode = props.getProperty("alphaCode");
+        selectedColor.modify(props);
+        transactionStatusMessage = (String)selectedColor.getState("UpdateStatusMessage");
+        try {
+            colorCollection.getColors();
+        }
+        catch (Exception exc) {
+            System.err.println(exc);
+        }
 	}
 
 	//-----------------------------------------------------------
 	public Object getState(String key) {
         switch (key) {
-            case "TransactionError":
-                return transactionErrorMessage;
+            case "TransactionStatus":
+                return transactionStatusMessage;
             case "ColorCollection":
                 return colorCollection;
-            case "Id":
-                return id;
-            case "Description":
-                return description;
-            case "BarcodePrefix":
-                return barcodePrefix;
-            case "AlphaCode":
-                return alphaCode;
+            case "SelectedColor":
+                return selectedColor;
+            case "id":
+            case "description":
+            case "barcodePrefix":
+            case "alphaCode":
+                return selectedColor.getState(key);
             default:
                 System.err.println("ModifyColorTransaction: invalid key for getState: "+key);
                 break;
@@ -88,35 +87,34 @@ public class ModifyColorTransaction extends Transaction {
             case "DoYourJob":
                 doYourJob();
                 break;
-            case "DoModifyColor":   // gets called from ModifyColorTransactionView
+            case "DoModifyColor":   // called from ModifyColorView on submit
                 processTransaction((Properties)value);
                 break;
-            default:
-                System.err.println("ModifyColorTransaction: invalid key for stateChangeRequest");
+            case "ColorSelected":
+				selectedColor = new Color((Properties)value);
+				createAndShowModifyColorView();
+				break;
+            case "CancelModifyColor":
+                swapToView(createView());
+                break;
         }
 		myRegistry.updateSubscribers(key, this);
 	}
 
-	/**
-	 * Create the view of this class. And then the super-class calls
-	 * swapToView() to display the view in the stage
-	 */
-	//------------------------------------------------------
 	protected Scene createView() {
-		Scene currentScene = myViews.get("ColorCollectionView");
+        View newView = ViewFactory.createView("ColorCollectionView", this);
+        Scene currentScene = new Scene(newView);
+        myViews.put("ColorCollectionView", currentScene);
 
-		if (currentScene == null) {
-			// create our new view
-			View newView = ViewFactory.createView("ColorCollectionView", this);
-			currentScene = new Scene(newView);
-			myViews.put("ColorCollectionView", currentScene);
-
-			return currentScene;
-		}
-		else {
-			return currentScene;
-		}
+        return currentScene;
 	}
+
+    protected void createAndShowModifyColorView() {
+        View newView = ViewFactory.createView("ModifyColorView", this);
+        Scene currentScene = new Scene(newView);
+        myViews.put("ModifyColorView", currentScene);
+		swapToView(currentScene);
+    }
 
 	//------------------------------------------------------
 	protected  void createAndShowReceiptView() {
