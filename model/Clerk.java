@@ -94,7 +94,7 @@ public class Clerk implements IView, IModel
 		switch (key) {
             case "AddArticleType":
             case "ModifyArticleType":
-            case "DeleteArticleType":
+            case "DeleteArticleType": //Called from ClerkView
             case "AddColor":
             case "ModifyColor":
             case "DeleteColor":
@@ -126,11 +126,18 @@ public class Clerk implements IView, IModel
 		stateChangeRequest(key, value);
 	}
 
+	/* Whenever a button is pressed
+	 * - stateChangeRequest comes here based on key
+	 * - Creates transaction based on transaction type
+	 */
 	public void doTransaction(String transactionType) {
 		try {
 			Transaction trans = TransactionFactory.createTransaction(transactionType);
 
+			//The trans is based on type passed to factory which
+			//returns the trans
 			trans.subscribe("CancelTransaction", this);
+			//this calls stateChangeRequest in whatever new transaction was created
 			trans.stateChangeRequest("DoYourJob", "");
 		}
 		catch (Exception ex) {
@@ -156,10 +163,6 @@ public class Clerk implements IView, IModel
 
 	private void createAndShowAddArticleTypeView() {
         System.out.println("add article type not implemented");
-    }
-
-    private void createAndShowSearchArticleTypeView() {
-        System.out.println("search article type not implemented");
     }
 
     private void createAndShowAddColorView() {

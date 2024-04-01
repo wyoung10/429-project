@@ -5,6 +5,9 @@ package model;
 import java.util.Vector;
 import javax.swing.JFrame;
 
+/*Class constructor is called in clerk's doTransaction
+ * - creates a returns corresponding transaction based on type
+ */
 public class TransactionFactory {
 	public static Transaction createTransaction(String transType) throws Exception {
 		Transaction retValue = null;
@@ -17,6 +20,9 @@ public class TransactionFactory {
                 break;
             case "DeleteColor":
                 retValue = new DeleteColorTransaction();
+                break;
+            case "DeleteArticleType":
+                retValue = new DeleteArticleTypeTransaction();
                 break;
             default:
                 System.err.println("Invalid transaction type");
