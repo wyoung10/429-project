@@ -51,6 +51,7 @@ public class ModifyColorTransaction extends Transaction {
 	//----------------------------------------------------------
 	public void processTransaction(Properties props) {
         selectedColor.modify(props);
+        selectedColor.update();
         transactionStatusMessage = (String)selectedColor.getState("UpdateStatusMessage");
         try {
             colorCollection.getColors();
