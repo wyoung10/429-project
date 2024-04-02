@@ -13,6 +13,8 @@ public class ViewFactory {
 				return new ColorCollectionView(model);
 			case "ModifyColorView":
 				return new ModifyColorView(model);
+			case "DeleteColorView":
+				return new DeleteColorView(model);
 			default:
 				return null;
 		}
