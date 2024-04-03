@@ -111,7 +111,7 @@ public class AddColorView extends View
 
         description = new TextField();
         description.setEditable(true);
-        grid.add(description, 1, 2);
+        grid.add(description, 1, 1);
 
         Text barcodeLabel = new Text("Barcode Prefix: ");
         barcodeLabel.setFont(myFont);
@@ -121,7 +121,7 @@ public class AddColorView extends View
 
         barcode = new TextField();
         barcode.setEditable(true);
-        grid.add(barcode, 1, 1);
+        grid.add(barcode, 1, 2);
 
 
 
