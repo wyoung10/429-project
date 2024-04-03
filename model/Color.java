@@ -161,7 +161,7 @@ public class Color extends EntityBase {
                         + "installed successfully in database!";
             }
         } catch (SQLException ex) {
-            updateStatusMessage = "Error in installing account data in database!";
+            updateStatusMessage = "Error: " + ex.getMessage();
         }
         //DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
     }
