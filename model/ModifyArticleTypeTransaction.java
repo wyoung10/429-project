@@ -121,7 +121,7 @@ public class ModifyArticleTypeTransaction extends Transaction {
 			case "Modify":
 				modify((Properties)value);
 				swapToView(createView());
-				processTransaction(new Properties());
+				processTransaction((Properties)value);
 				break;
             default:
                 System.err.println("ModifyArticleTypeTransaction: invalid key for stateChangeRequest " + key);
