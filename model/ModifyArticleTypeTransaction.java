@@ -66,7 +66,9 @@ public class ModifyArticleTypeTransaction extends Transaction {
             articleTypeCollection.findArticleTypeBoth(alphaCode, description);
             alphaCode = null;
             description = null;
-        }
+        } else {
+			articleTypeCollection.findArticleTypeDesc("");
+		}
 		
 	}
 
@@ -118,8 +120,9 @@ public class ModifyArticleTypeTransaction extends Transaction {
                 break;
 			case "Modify":
 				modify((Properties)value);
-				stateChangeRequest("DoModifyArticleType", value); //Don't question my authoritah
-				createAndShowArticleTypeCollectionView();
+				swapToView(createView());
+				processTransaction(new Properties());
+				break;
             default:
                 System.err.println("ModifyArticleTypeTransaction: invalid key for stateChangeRequest " + key);
         }
