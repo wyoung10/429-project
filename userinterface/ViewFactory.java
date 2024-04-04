@@ -21,6 +21,8 @@ public class ViewFactory {
 				return new ArticleTypeCollectionView(model);
 			case "ConfirmDeleteArticleView":
 				return new ConfirmDeleteArticleView(model);
+			case "ArticleTypeView":
+				return new ArticleTypeView(model);
 			default:
 				return null;
 		}
