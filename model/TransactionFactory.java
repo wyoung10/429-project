@@ -27,6 +27,9 @@ public class TransactionFactory {
             case "AddArticleType":
                 retValue = new AddArticleTypeTransaction();
                 break;
+            case "ModifyArticleType":
+                retValue = new ModifyArticleTypeTransaction();
+                break;
             default:
                 System.err.println("Invalid transaction type");
         }

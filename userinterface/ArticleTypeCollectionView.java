@@ -138,7 +138,7 @@ public class ArticleTypeCollectionView extends View
         grid.setPadding(new Insets(25, 25, 25, 25));
         
         Text prompt = new Text("Article Type INFORMATION");
-        prompt.setWrappingWidth(400);
+        prompt.setWrappingWidth(300);
         prompt.setTextAlignment(TextAlignment.CENTER);
         prompt.setFill(Color.BLACK);
         grid.add(prompt, 0, 0, 2, 1);
@@ -147,7 +147,7 @@ public class ArticleTypeCollectionView extends View
     
         Text aplhaCodeLabel = new Text(" Alpha Code: ");
         aplhaCodeLabel.setFont(myFont);
-        aplhaCodeLabel.setWrappingWidth(150);
+        aplhaCodeLabel.setWrappingWidth(100);
         aplhaCodeLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(aplhaCodeLabel, 0, 1);
 
@@ -157,7 +157,7 @@ public class ArticleTypeCollectionView extends View
 
         Text descriptionLabel = new Text(" Description: ");
         descriptionLabel.setFont(myFont);
-        descriptionLabel.setWrappingWidth(150);
+        descriptionLabel.setWrappingWidth(100);
         descriptionLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(descriptionLabel, 0, 2);
 
@@ -168,11 +168,6 @@ public class ArticleTypeCollectionView extends View
 
 		tableOfArticleTypes = new TableView<ArticleTypeTableModel>();
 		tableOfArticleTypes.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-		TableColumn idColumn = new TableColumn("ID") ;
-		idColumn.setMinWidth(100);
-		idColumn.setCellValueFactory(
-	                new PropertyValueFactory<ArticleTypeTableModel, String>("id"));
 
 		TableColumn descriptionColumn = new TableColumn("Description") ;
 		descriptionColumn.setMinWidth(100);
@@ -189,7 +184,7 @@ public class ArticleTypeCollectionView extends View
 		alphaCodeColumn.setCellValueFactory(
 	                new PropertyValueFactory<ArticleTypeTableModel, String>("alphaCode"));
 
-		tableOfArticleTypes.getColumns().addAll(idColumn, descriptionColumn, barcodePrefixColumn, alphaCodeColumn);
+		tableOfArticleTypes.getColumns().addAll(descriptionColumn, barcodePrefixColumn, alphaCodeColumn);
 
 		tableOfArticleTypes.setOnMousePressed(new EventHandler<MouseEvent>() {
 			@Override
@@ -200,7 +195,7 @@ public class ArticleTypeCollectionView extends View
 			}
 		});
 		ScrollPane scrollPane = new ScrollPane();
-		scrollPane.setPrefSize(115, 150);
+		scrollPane.setPrefSize(372, 150);
 		scrollPane.setContent(tableOfArticleTypes);
 
 		submitButton = new Button("Submit");
