@@ -67,7 +67,9 @@ public class DeleteArticleTypeTransaction extends Transaction {
             articleTypeCollection.findArticleTypeBoth(alphaCode, description);
             alphaCode = null;
             description = null;
-        }
+        } else {
+			articleTypeCollection.findArticleTypeDesc("");
+		}
         
 	}
 
@@ -124,6 +126,7 @@ public class DeleteArticleTypeTransaction extends Transaction {
 				break;
             case "CancelDeleteArticleType":
                 swapToView(createView());
+                processTransaction(new Properties());
                 break;
             case "ConfirmDeleteArticleType": //called from confirm view
                 //actually sets article type to inactive
@@ -134,11 +137,19 @@ public class DeleteArticleTypeTransaction extends Transaction {
 	}
 
 	protected Scene createView() {
-        View newView = ViewFactory.createView("ArticleTypeCollectionView", this);
-        Scene currentScene = new Scene(newView);
-        myViews.put("ArticleTypeCollectionView", currentScene);
+        Scene currentScene = myViews.get("ArticleTypeCollectionView");
 
-        return currentScene;
+		if (currentScene == null) {
+			// create our new view
+			View newView = ViewFactory.createView("ArticleTypeCollectionView", this);
+			currentScene = new Scene(newView);
+			myViews.put("ArticleTypeCollectionView", currentScene);
+
+			return currentScene;
+		}
+		else {
+			return currentScene;
+		}
 	}
     
     /*Method called from local stateChangeRequest

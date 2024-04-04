@@ -73,6 +73,9 @@ public class ArticleTypeCollectionView extends View
 		container.getChildren().add(createStatusLog("                                            "));
 
 		getChildren().add(container);
+
+		myModel.subscribe("Modify", this);
+		myModel.subscribe("CancelDeleteArticleType", this);
 	}
 
 	//--------------------------------------------------------------------------
@@ -244,6 +247,14 @@ public class ArticleTypeCollectionView extends View
 
 	//--------------------------------------------------------------------------
 	public void updateState(String key, Object value) {
+        switch (key) {
+            case "Modify":
+				getEntryTableModelValues();
+				break;
+			case "CancelDeleteArticleType":
+				getEntryTableModelValues();
+				break;
+		}
 	}
 
 	//--------------------------------------------------------------------------
