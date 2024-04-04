@@ -17,6 +17,10 @@ public class ViewFactory {
 				return new DeleteColorView(model);
 			case "AddColorView":
 				return new AddColorView(model);
+			case "ArticleTypeCollectionView":
+				return new ArticleTypeCollectionView(model);
+			case "ConfirmDeleteArticleView":
+				return new ConfirmDeleteArticleView(model);
 			default:
 				return null;
 		}

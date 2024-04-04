@@ -59,7 +59,7 @@ abstract public class Transaction implements IView, IModel
 
 	/**
 	 * Template method
-	 *
+	 * - called from a transaction to create corresponding view
 	 */
 	//---------------------------------------------------------
 	protected void doYourJob() {
