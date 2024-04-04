@@ -163,10 +163,15 @@ public class ModifyColorView extends View {
 
 	//--------------------------------------------------------------------------
 	public void updateState(String key, Object value) {
-        switch (key) {
-            case "TransactionStatus":
-                displayMessage((String)value);
-		}
+        if (key.equals("TransactionStatus")) {
+            String val = (String) value;
+            if ((val.startsWith("ERR")) || (val.startsWith("Err"))) {
+                displayErrorMessage(val);
+            } else {
+                displayMessage(val);
+
+            }
+        }
 	}
 
 	//--------------------------------------------------------------------------
@@ -195,6 +200,11 @@ public class ModifyColorView extends View {
 	{
 		statusLog.displayMessage(message);
 	}
+
+	public void displayErrorMessage(String message)
+    {
+        statusLog.displayErrorMessage(message);
+    }
 
 	/**
 	 * Clear error message
