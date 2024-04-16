@@ -120,14 +120,21 @@ public class ModifyColorView extends View {
         prompt.setFill(javafx.scene.paint.Color.BLACK);
         grid.add(prompt, 0, 0, 2, 1);
 
+		Text descriptionLabel = new Text("Description:");
         description = new TextField();
+
+		Text barcodePrefixLabel = new Text("Barcode Prefix:");
         barcodePrefix = new TextField();
+
+		Text alphaCodeLabel = new Text("Alpha Code:");
         alphaCode = new TextField();
 
-        grid.add(description, 0, 1);
-        grid.add(barcodePrefix, 0, 2);
-        grid.add(alphaCode, 0, 3);
-
+		grid.add(descriptionLabel, 0, 1);
+        grid.add(description, 1, 1);
+		grid.add(barcodePrefixLabel, 0, 2);
+		grid.add(barcodePrefix, 1, 2);
+		grid.add(alphaCodeLabel, 0, 3);
+        grid.add(alphaCode, 1, 3);
 
         HBox btnContainer = new HBox(100);
 		btnContainer.setAlignment(Pos.CENTER);
@@ -163,10 +170,15 @@ public class ModifyColorView extends View {
 
 	//--------------------------------------------------------------------------
 	public void updateState(String key, Object value) {
-        switch (key) {
-            case "TransactionStatus":
-                displayMessage((String)value);
-		}
+        if (key.equals("TransactionStatus")) {
+            String val = (String) value;
+            if ((val.startsWith("ERR")) || (val.startsWith("Err"))) {
+                displayErrorMessage(val);
+            } else {
+                displayMessage(val);
+
+            }
+        }
 	}
 
 	//--------------------------------------------------------------------------
@@ -195,6 +207,11 @@ public class ModifyColorView extends View {
 	{
 		statusLog.displayMessage(message);
 	}
+
+	public void displayErrorMessage(String message)
+    {
+        statusLog.displayErrorMessage(message);
+    }
 
 	/**
 	 * Clear error message

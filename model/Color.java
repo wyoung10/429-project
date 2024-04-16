@@ -151,14 +151,13 @@ public class Color extends EntityBase {
                 whereClause.setProperty("id",
                         persistentState.getProperty("id"));
                 updatePersistentState(mySchema, persistentState, whereClause);
-                updateStatusMessage = "Color data for id : " + persistentState.getProperty("id") + " updated successfully in database!";
+                updateStatusMessage = "Color updated successfully in database!";
             } else {
                 // insert
                 Integer id =
                         insertAutoIncrementalPersistentState(mySchema, persistentState);
                 persistentState.setProperty("id", "" + id);
-                updateStatusMessage = "Color data for new Color : " + persistentState.getProperty("id")
-                        + "installed successfully in database!";
+                updateStatusMessage = "New Color installed successfully in database!";
             }
         } catch (SQLException ex) {
             updateStatusMessage = "Error: " + ex.getMessage();
