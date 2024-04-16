@@ -99,6 +99,8 @@ public class Clerk implements IView, IModel
             case "ModifyColor":
             case "DeleteColor":
 			case "AddInventory":
+				createAndShowAddInventoryView();
+				break;
 			case "ModifyInventory":
 			case "DeleteInventory":
 			case "CheckoutInventory":
@@ -170,8 +172,17 @@ public class Clerk implements IView, IModel
     }
 
     private void createAndShowAddInventoryView() {
-        System.out.println("add inventory not implemented");
-    }
+
+    Scene currentScene = (Scene)myViews.get("AddInventoryItemView");
+
+		if (currentScene == null){
+			View newView = ViewFactory.createView("AddInventoryItemView", this);
+			currentScene = new Scene(newView);
+			myViews.put("AddInventoryItemView", currentScene);
+		}
+
+		swapToView(currentScene);
+    }//End createAndShowAddInventoryView---------------------------------
 
     private void createAndShowScanBarcodeView() {
         System.out.println("scan barcode not implemented");
