@@ -1,3 +1,4 @@
 *.class
 ErrorLog.txt
 .idea/*
+*.iml
