@@ -24,6 +24,11 @@ public class Color extends EntityBase {
 
     private String updateStatusMessage = "";
 
+    public Color(){
+		super(myTableName);
+		setDependencies();
+	}
+
     // constructor for this class
     //----------------------------------------------------------
     public Color(String id)
@@ -249,5 +254,45 @@ public class Color extends EntityBase {
             mySchema = getSchemaInfo(tableName);
         }
     }
+
+    public Color findColorByBarcodePrefix(String barcodePrefix) throws InvalidPrimaryKeyException{
+		String query = "SELECT * FROM " + myTableName + " WHERE (barcodePrefix = " + barcodePrefix + ")";
+
+		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+
+		// You must get one account at least
+        if (allDataRetrieved != null) {
+            int size = allDataRetrieved.size();
+
+            // There should be EXACTLY one Color. More than that is an error
+            if (size != 1) {
+                throw new InvalidPrimaryKeyException("Multiple ids matching : "
+                        + barcodePrefix + " found.");
+            } else {
+                // copy all the retrieved data into persistent state
+                Properties retrievedColorData = allDataRetrieved.elementAt(0);
+                persistentState = new Properties();
+
+                Enumeration allKeys = retrievedColorData.propertyNames();
+                while (allKeys.hasMoreElements() == true) {
+                    String nextKey = (String) allKeys.nextElement();
+                    String nextValue = retrievedColorData.getProperty(nextKey);
+                    // accountNumber = Integer.parseInt(retrievedAccountData.getProperty("accountNumber"));
+
+                    if (nextValue != null) {
+                        persistentState.setProperty(nextKey, nextValue);
+                    }
+                }
+
+				Color color = new Color(retrievedColorData);
+				return color;
+
+            }
+        }
+        else {
+            throw new InvalidPrimaryKeyException("No color matching id : "
+                    + barcodePrefix + " found.");
+        }
+	 }
 }
 

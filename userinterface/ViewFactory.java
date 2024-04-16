@@ -27,6 +27,10 @@ public class ViewFactory {
 				return new ArticleTypeView(model);
 			case "ModifyArticleTypeView":
 				return new ModifyArticleTypeView(model);
+			case "ScanBarcodeView":
+				return new ScanBarcodeView(model);
+			case "ModifyInventoryView":
+				return new ModifyInventoryView(model);
 			default:
 				return null;
 		}

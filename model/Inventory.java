@@ -3,7 +3,6 @@ package model;
 
 // system imports
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -20,9 +19,9 @@ import userinterface.ViewFactory;
 
 /** The class containing the Account for the ATM application */
 //==============================================================
-public class ArticleType extends EntityBase implements IView
+public class Inventory extends EntityBase implements IView
 {
-	private static final String myTableName = "ArticleType";
+	private static final String myTableName = "Inventory";
 
 	protected Properties dependencies;
 
@@ -30,7 +29,7 @@ public class ArticleType extends EntityBase implements IView
 
 	private String updateStatusMessage = "";
 
-	public ArticleType(){
+	public Inventory(){
 		super(myTableName);
 		setDependencies();
 	}
@@ -38,13 +37,13 @@ public class ArticleType extends EntityBase implements IView
 
 	// constructor for this class
 	//----------------------------------------------------------
-	public ArticleType(String barcodePrefix)
+	public Inventory(String barcode)
 			throws InvalidPrimaryKeyException
 	{
 		super(myTableName);
 
 		setDependencies();
-		String query = "SELECT * FROM " + myTableName + " WHERE (barcodePrefix = " + barcodePrefix + ")";
+		String query = "SELECT * FROM " + myTableName + " WHERE (barcode = " + barcode + ")";
 
 		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
 
@@ -56,8 +55,8 @@ public class ArticleType extends EntityBase implements IView
 			// There should be EXACTLY one book. More than that is an error
 			if (size != 1)
 			{
-				throw new InvalidPrimaryKeyException("Multiple ArticleType matching barcode : "
-						+ barcodePrefix + " found.");
+				throw new InvalidPrimaryKeyException("Multiple Inventory matching barcode : "
+						+ barcode + " found.");
 			}
 			else
 			{
@@ -80,18 +79,18 @@ public class ArticleType extends EntityBase implements IView
 
 			}
 		}
-		// If no book found for this id, throw an exception
+		// If no Inventory found for this barcode, throw an exception
 		else
 		{
-			throw new InvalidPrimaryKeyException("No account matching id : "
-					+ barcodePrefix + " found.");
+			throw new InvalidPrimaryKeyException("No inventory matching barcode : "
+					+ barcode + " found.");
 		}
 	}
 
 	// Can also be used to create a NEW Book (if the system it is part of
 	// allows for a new account to be set up)
 	//----------------------------------------------------------
-	public ArticleType(Properties props)
+	public Inventory(Properties props)
 	{
 		super(myTableName);
 
@@ -131,8 +130,9 @@ public class ArticleType extends EntityBase implements IView
 	//----------------------------------------------------------
 	public Object getState(String key)
 	{
-		if (key.equals("UpdateStatusMessage") == true)
+		if (key.equals("UpdateStatusMessage") == true) {
 			return updateStatusMessage;
+		}
 
 		return persistentState.getProperty(key);
 	}
@@ -162,43 +162,57 @@ public class ArticleType extends EntityBase implements IView
 	{
 		try
 		{
-			if (persistentState.getProperty("id") != null)
+			if (persistentState.getProperty("barcode") != null)
 			{
 				// update
 				Properties whereClause = new Properties();
-				whereClause.setProperty("id",
-						persistentState.getProperty("id"));
+				whereClause.setProperty("barcode",
+						persistentState.getProperty("barcode"));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "ArticleType data for id : " + persistentState.getProperty("id") + " updated successfully in database!";
+				updateStatusMessage = "Inventory data for barcode : " + persistentState.getProperty("barcode") + " updated successfully in database!";
 			}
 			else
 			{
 				// insert
-				Integer id = insertAutoIncrementalPersistentState(mySchema, persistentState);
-				persistentState.setProperty("id", "" + id.intValue());
-				updateStatusMessage = "ArticleType data for new ArticleType : " +  persistentState.getProperty("id")
+				Integer id =
+						insertAutoIncrementalPersistentState(mySchema, persistentState);
+				persistentState.setProperty("barcode", "" + id.intValue());
+				updateStatusMessage = "Inventory data for new Inventory : " +  persistentState.getProperty("barcode")
 						+ "installed successfully in database!";
 			}
 		}
 		catch (SQLException ex)
 		{
-			updateStatusMessage = "Error in installing book data in database!";
+			updateStatusMessage = "Error in adding Inventory data in database!";
 		}
 		//DEBUG System.out.println("updateStateInDatabase " + updateStatusMessage);
 	}
 
 
-	//Displays book information
+	//Displays inventory information
 	//--------------------------------------------------------------------------
 	public Vector<String> getEntryListView()
 	{
 		Vector<String> v = new Vector<String>();
 
-		v.addElement(persistentState.getProperty("id"));
-		v.addElement(persistentState.getProperty("description"));
-		v.addElement(persistentState.getProperty("barcodePrefix"));
-		v.addElement(persistentState.getProperty("alphaCode"));
+		v.addElement(persistentState.getProperty("barcode"));
+		v.addElement(persistentState.getProperty("gender"));
+		v.addElement(persistentState.getProperty("size"));
+		v.addElement(persistentState.getProperty("articleTypeId"));
+		v.addElement(persistentState.getProperty("color1Id"));
+		v.addElement(persistentState.getProperty("color2Id"));
+		v.addElement(persistentState.getProperty("brand"));
+		v.addElement(persistentState.getProperty("notes"));
 		v.addElement(persistentState.getProperty("status"));
+		v.addElement(persistentState.getProperty("donorLastName"));
+		v.addElement(persistentState.getProperty("donorFirstName"));
+		v.addElement(persistentState.getProperty("donorPhone"));
+		v.addElement(persistentState.getProperty("donorEmail"));
+		v.addElement(persistentState.getProperty("receiverNetid"));
+		v.addElement(persistentState.getProperty("receiverLastname"));
+		v.addElement(persistentState.getProperty("receiverFirstname"));
+		v.addElement(persistentState.getProperty("dateDonated"));
+		v.addElement(persistentState.getProperty("dateTaken"));
 
 		return v;
 	}
@@ -213,10 +227,10 @@ public class ArticleType extends EntityBase implements IView
 	}
 
 	//-----------------------------------------------------------------------------------
-	public static int compare(ArticleType a, ArticleType b)
+	public static int compare(Inventory a, Inventory b)
 	{
-		String aNum = (String)a.getState("barcodePrefix");
-		String bNum = (String)b.getState("barcodePrefix");
+		String aNum = (String)a.getState("barcode");
+		String bNum = (String)b.getState("barcode");
 
 		return aNum.compareTo(bNum);
 	}
@@ -250,45 +264,5 @@ public class ArticleType extends EntityBase implements IView
 	 public void update() // save()
 	 {
 		 updateStateInDatabase();
-	 }
-
-	 public ArticleType findArticleTypeById(String id) throws InvalidPrimaryKeyException{
-		String query = "SELECT * FROM " + myTableName + " WHERE (id = " + id + ")";
-
-		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
-
-		// You must get one account at least
-        if (allDataRetrieved != null) {
-            int size = allDataRetrieved.size();
-
-            // There should be EXACTLY one Color. More than that is an error
-            if (size != 1) {
-                throw new InvalidPrimaryKeyException("Multiple ids matching : "
-                        + id + " found.");
-            } else {
-                // copy all the retrieved data into persistent state
-                Properties retrievedArticleTypeData = allDataRetrieved.elementAt(0);
-                persistentState = new Properties();
-
-                Enumeration allKeys = retrievedArticleTypeData.propertyNames();
-                while (allKeys.hasMoreElements() == true) {
-                    String nextKey = (String) allKeys.nextElement();
-                    String nextValue = retrievedArticleTypeData.getProperty(nextKey);
-                    // accountNumber = Integer.parseInt(retrievedAccountData.getProperty("accountNumber"));
-
-                    if (nextValue != null) {
-                        persistentState.setProperty(nextKey, nextValue);
-                    }
-                }
-
-				ArticleType articleType = new ArticleType(retrievedArticleTypeData);
-				return articleType;
-
-            }
-        }
-        else {
-            throw new InvalidPrimaryKeyException("No color matching id : "
-                    + id + " found.");
-        }
 	 }
 }

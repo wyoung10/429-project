@@ -32,6 +32,11 @@ public class InventoryItem extends EntityBase implements IView {
     //Will need already existing flag
     Boolean preexists = false;
 
+    public InventoryItem(){
+		super(myTableName);
+		setDependencies();
+	}
+
     //------------------------------------------------------------
     /*CONSTRUCTOR
      * Constructor to pull existing record from table
@@ -101,6 +106,8 @@ public class InventoryItem extends EntityBase implements IView {
     public InventoryItem(Properties props) {
         super(myTableName); //Connect object to database
 
+        setDependencies();
+
         //persistent state for current object
         //eventually passed to database for insertion
         persistentState = new Properties();
@@ -121,6 +128,13 @@ public class InventoryItem extends EntityBase implements IView {
 
     //===============================METHODS===================================
 
+    public String toString()
+	{
+		setDependencies();
+		return "\nDescription: " + persistentState.getProperty("description") + "\n Barcode Prefix: " +
+			persistentState.getProperty("barcodePrefix") + "\n Alpha Code: " +
+			persistentState.getProperty("alphaCode");
+	}
 
     /**================================================================
      * setDependencies
@@ -139,9 +153,15 @@ public class InventoryItem extends EntityBase implements IView {
      *
      * calls updateStateInDatabase. Equivalent to save()
      */
-    public void update(){
+    public void update()
+    {
         updateStateInDatabase();
     }//End update-------------------------------------------
+
+    public void save() // save()
+	{
+		updateStateInDatabase();
+	}
 
     /**==============================================================
      * updateStateInDatabase
@@ -156,20 +176,24 @@ public class InventoryItem extends EntityBase implements IView {
         //Try based on id property
         try{
             //update if preexists
-            if (preexists == true){
-                Properties whereClause = new Properties();
-                whereClause.setProperty("id",
-                        persistentState.getProperty("id"));
-                updatePersistentState(mySchema, persistentState, whereClause);
-                updateStatusMessage = "Inventory Item Updated!";
-            } else { //insert if not preexists
-
-                Integer id = insertAutoIncrementalPersistentState(
-                        mySchema, persistentState);
-
-                persistentState.setProperty("id", "" + id);
-                updateStatusMessage = "Inventory Item created in database!";
-            }
+            if (preexists == true)
+            {
+            	// update
+				Properties whereClause = new Properties();
+				whereClause.setProperty("barcode",
+						persistentState.getProperty("barcode"));
+				updatePersistentState(mySchema, persistentState, whereClause);
+				updateStatusMessage = "Inventory data for barcode : " + persistentState.getProperty("barcode") + " updated successfully in database!";
+			}
+			else
+			{
+				// insert
+				Integer code =
+                    insertPersistentState(mySchema, persistentState);
+				preexists = true;
+				updateStatusMessage = "Inventory data for new Inventory : " +  persistentState.getProperty("barcode")
+						+ "installed successfully in database!";
+			}
         } catch (SQLException ex) {
             updateStatusMessage = "Error: " + ex.getMessage();
         }
@@ -219,30 +243,6 @@ public class InventoryItem extends EntityBase implements IView {
 
     }//End initializeSchema------------------------------------
 
-    /**===============================================================
-     * initializeSchema
-     *
-     * creates schema of table
-     *
-     * @param tableName name of the matching table in database
-     */
-    protected void initializeSchema(String tableName) {
-        if (mySchema == null) {
-            mySchema = getSchemaInfo(tableName);
-        }
-    }//End initializeSchema------------------------------------
-
-    /**==============================================================
-     * toString
-     *
-     * returns string with object's fields
-     */
-    public String toString(){
-
-        return "string of inventory item";
-
-    }//End toString--------------------------------------------
-
     /**===========================================================
      * getEntryListView
      *
@@ -265,10 +265,59 @@ public class InventoryItem extends EntityBase implements IView {
         v.addElement(persistentState.getProperty("donorFirstName"));
         v.addElement(persistentState.getProperty("donorPhone"));
         v.addElement(persistentState.getProperty("donorEmail"));
+        v.addElement(persistentState.getProperty("receiverNetid"));
+		v.addElement(persistentState.getProperty("receiverLastname"));
+		v.addElement(persistentState.getProperty("receiverFirstname"));
+		v.addElement(persistentState.getProperty("dateDonated"));
+		v.addElement(persistentState.getProperty("dateTaken"));
 
 
         return v;
     }//End getEntryListView-----------------------------------
+
+    //-----------------------------------------------------------------------------------
+	public static int compare(InventoryItem a, InventoryItem b)
+	{
+		String aNum = (String)a.getState("barcode");
+		String bNum = (String)b.getState("barcode");
+
+		return aNum.compareTo(bNum);
+	}
+
+	/*delete----------------------------------------------
+	 * Set status to inactive
+	 */
+	public void delete() {
+        persistentState.setProperty("status", "Inactive");
+    }//End delete----------------------------------------
+
+	/*modify--------------------------------------------
+	 * 
+	 */
+	public void modify(Properties props) {
+        Enumeration allKeys = props.propertyNames();
+        while (allKeys.hasMoreElements() == true) {
+            String nextKey = (String) allKeys.nextElement();
+            String nextValue = props.getProperty(nextKey);
+
+            if (nextValue != null) {
+                persistentState.setProperty(nextKey, nextValue);
+            }
+        }
+    }
+
+    /**===============================================================
+     * initializeSchema
+     *
+     * creates schema of table
+     *
+     * @param tableName name of the matching table in database
+     */
+    protected void initializeSchema(String tableName) {
+        if (mySchema == null) {
+            mySchema = getSchemaInfo(tableName);
+        }
+    }//End initializeSchema------------------------------------
 
 
 }//END CLASS==========================================================

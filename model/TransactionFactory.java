@@ -7,6 +7,8 @@ import userinterface.AddInventoryItemView;
 import java.util.Vector;
 import javax.swing.JFrame;
 
+import model.ModifyInventoryTransaction;
+
 /*Class constructor is called in clerk's doTransaction
  * - creates a returns corresponding transaction based on type
  */
@@ -34,6 +36,9 @@ public class TransactionFactory {
                 break;
             case "AddInventory":
                 retValue = new AddInventoryItemTransaction();
+                break;
+            case "ModifyInventory":
+                retValue = new ModifyInventoryTransaction();
                 break;
             default:
                 System.err.println("Invalid transaction type");
