@@ -19,7 +19,7 @@ CREATE TABLE Color (
 CREATE TABLE Inventory (
     barcode CHAR(8) PRIMARY KEY,
     gender ENUM('M', 'W') NOT NULL,
-    size VARCHAR(20),
+    size VARCHAR(20) NOT NULL,
     articleTypeId INTEGER NOT NULL,
     color1Id INTEGER NOT NULL,
     color2Id INTEGER,
@@ -33,7 +33,7 @@ CREATE TABLE Inventory (
     receiverNetId VARCHAR(50),
     receiverLastName VARCHAR(50),
     receiverFirstName VARCHAR(50),
-    dateDonated CHAR(10),
+    dateDonated CHAR(10) NOT NULL,
     dateTaken CHAR(10),
     CONSTRAINT fk_inventory_article_type FOREIGN KEY (articleTypeId) REFERENCES ArticleType(id),
     CONSTRAINT fk_inventory_color1 FOREIGN KEY (color1Id) REFERENCES Color(id),
