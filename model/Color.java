@@ -124,6 +124,7 @@ public class Color extends EntityBase {
 
 
     public void updateState(String key, Object value) {
+
         stateChangeRequest(key, value);
     }
 
