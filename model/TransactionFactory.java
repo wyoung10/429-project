@@ -2,6 +2,8 @@
 package model;
 
 // system imports
+import userinterface.AddInventoryItemView;
+
 import java.util.Vector;
 import javax.swing.JFrame;
 
@@ -29,6 +31,9 @@ public class TransactionFactory {
                 break;
             case "ModifyArticleType":
                 retValue = new ModifyArticleTypeTransaction();
+                break;
+            case "AddInventory":
+                retValue = new AddInventoryItemTransaction();
                 break;
             default:
                 System.err.println("Invalid transaction type");

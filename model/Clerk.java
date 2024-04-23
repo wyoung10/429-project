@@ -94,13 +94,11 @@ public class Clerk implements IView, IModel
 		switch (key) {
             case "AddArticleType":
             case "ModifyArticleType":
-            case "DeleteArticleType": //Called from ClerkView
+            case "DeleteArticleType":
             case "AddColor":
             case "ModifyColor":
             case "DeleteColor":
 			case "AddInventory":
-				createAndShowAddInventoryView();
-				break;
 			case "ModifyInventory":
 			case "DeleteInventory":
 			case "CheckoutInventory":

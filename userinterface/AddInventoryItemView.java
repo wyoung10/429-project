@@ -8,6 +8,7 @@ import java.util.Properties;
 // nothing
 //git practice commit amend
 
+import exception.InvalidPrimaryKeyException;
 import javafx.event.Event;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,10 +17,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -27,6 +25,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.*;
+import model.ArticleType;
+import model.*;
 import model.InventoryItem;
 import javafx.scene.Scene;
 import javafx.scene.input.*;
@@ -81,9 +81,11 @@ public class AddInventoryItemView extends View {
 
 		getChildren().add(container);
 
-		// STEP 0: Be sure you tell your model what keys you are interested in
-		// myModel.subscribe("LoginError", this);
+        //Subscription will facilitate functionality
+        myModel.subscribe("TransactionStatus", this);
+
 	}//END CONSTRUCTOR================================================
+
 
     /*createTitle-------------------------------------------------------
      * create Title text
@@ -128,7 +130,7 @@ public class AddInventoryItemView extends View {
         grid.add(genderLabel, 0, 1);
         
         genderField = new TextField();
-        genderField.setEditable(true);
+        genderField.setEditable(false);
         grid.add(genderField, 1, 1);
 
         //-----Article Label and Field-----
@@ -138,7 +140,7 @@ public class AddInventoryItemView extends View {
         grid.add(articleLabel, 0, 2);
 
         articleField = new TextField();
-        articleField.setEditable(true);
+        articleField.setEditable(false);
         grid.add(articleField, 1, 2);
 
         //-----Primary Color Label and Field-----
@@ -148,7 +150,7 @@ public class AddInventoryItemView extends View {
         grid.add(colorLabel, 0, 3);
 
         colorField = new TextField();
-        colorField.setEditable(true);
+        colorField.setEditable(false);
         grid.add(colorField, 1, 3);
 
         //------Color2 Label and Field-----
@@ -231,16 +233,18 @@ public class AddInventoryItemView extends View {
         emailField.setEditable(true);
         grid.add(emailField, 1, 11);
 
-        /*barcodeField upon losing focus:
+        /** barcodeField upon losing focus:
          * -verify user input
          * -parse gender, article id, and primary color
          * -all other textfields will become editable
+         *
+         * 4/22/2024
+         * - Doesn't parse strings correctly
          */
         barcodeField.focusedProperty().addListener(new ChangeListener<Boolean>()
         {
             @Override
-            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue)
-            {               
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
                 //String from barcode field
                 String barcodeTempString = barcodeField.getText();
                 
@@ -253,19 +257,19 @@ public class AddInventoryItemView extends View {
 
                     //Check that input is 8 digits
                     if (barcodeTempString.length() != 8){
-                        barcodeField.setText("Barcode was incorrect length. Please try again");                    
+                        barcodeField.setText("Please Enter Barcode");
                     } else {
                         //parse barcode for info
                         //char[] barcodeArray = barcodeTempString.toCharArray();
 
                         //Determine gender from first digit
                         //char genderChar = barcodeArray[0];
-                        String genderString = barcodeTempString.substring(0, 0);
-                        if (genderString == "0"){
+                        String genderString = barcodeTempString.substring(0, 1);
+                        if (genderString.equals("0")){
                             genderField.setText("M");
                             genderField.setEditable(true);
                         } else
-                        if (genderString == "1"){
+                        if (genderString.equals("1")){
                             genderField.setText("W");
                             genderField.setEditable(true);
                         } else {
@@ -275,28 +279,23 @@ public class AddInventoryItemView extends View {
 
                         //Determine article type from next two digits
                         String articleBarPrefix = barcodeTempString.substring(1, 3);
-                        try {
-                            Article article = new Article(articleBarPrefix);
-                            articleField.setText(article.getState("name"));
-                            articleField.setEditable(true);
-                        } catch (SQLException exc) {
-                            
-                        }//End article verification
+                        ArticleType article = new ArticleType(articleBarPrefix);
+                        articleField.setText(article.getState("name").toString());
+                        articleField.setEditable(true);
+                        //End Article Type----------------------------------------
 
                         //Determine color1 from next two digits
                         String colorBarPrefix = barcodeTempString.substring(3, 5);
-                        try {
-                            Color color = new Color(colorBarPrefix);
-                            colorField.setText(color.getState("name"));
+                            model.Color color = new model.Color(colorBarPrefix);
+                            colorField.setText(color.getState("name").toString());
                             colorField.setEditable(true);
-                        } catch (SQLException exc) {
+                        //End Color---------------------------------------------
 
-                        }//End color verification
                     }//End if else for barcode parse
-                } catch (NumberFormatException exc){
-                    barcodeField.setText("Barcode should be numerical");
+                } catch (NumberFormatException | InvalidPrimaryKeyException exc){
+                    barcodeField.setText("Please Enter Barcode");
                 }//End trycatch block                
-            }//End change            
+            }//End changed
         });//End focusProperty
 
         //====BUTTONS=====
@@ -321,9 +320,8 @@ public class AddInventoryItemView extends View {
             
             @Override
             public void handle(ActionEvent e){
-
-                //CLERK REQUIRES MATCHING STATE CHANGE
-                myModel.stateChangeRequest(getAccessibleHelp(), e);
+                clearErrorMessage();
+                myModel.stateChangeRequest("CancelAddInventoryItem", null);
             }
         });
         buttons.getChildren().add(cancelButton);
@@ -345,37 +343,37 @@ public class AddInventoryItemView extends View {
 
         //Parse barcode for article, gender, primary color
 
-        //Convert input to strings
-        String barcodeString = barcodeField.getText();
-        String genderString = genderField.getText();
-        String articleString = articleField.getText();
-        String colorString = colorField.getText();
-        String color2String = colorField.getText();
-        String sizeString = sizeField.getText();
-        String brandString = brandField.getText();
-        String notesString = notesField.getText();
-        String fnameString = fnameField.getText();
-        String lnameString = lnameField.getText();
-        String phoneString = phoneField.getText();
-        String emailString = emailField.getText();
+//        //Convert input to strings
+//        String barcodeString = barcodeField.getText();
+//        String genderString = genderField.getText();
+//        String articleString = articleField.getText();
+//        String colorString = colorField.getText();
+//        String color2String = colorField.getText();
+//        String sizeString = sizeField.getText();
+//        String brandString = brandField.getText();
+//        String notesString = notesField.getText();
+//        String fnameString = fnameField.getText();
+//        String lnameString = lnameField.getText();
+//        String phoneString = phoneField.getText();
+//        String emailString = emailField.getText();
 
         //Create properties and keys
         Properties insertProperties = new Properties();
-        insertProperties.setProperty("barcode", barcodeString);
-        insertProperties.setProperty("gender", genderString);
-        insertProperties.setProperty("size", sizeString);
-        insertProperties.setProperty("articleTypeId", articleString);
-        insertProperties.setProperty("color1Id", colorString);
-        insertProperties.setProperty("color2Id", color2String);
-        insertProperties.setProperty("brand", brandString);
-        insertProperties.setProperty("notes", notesString);
-        insertProperties.setProperty("donorLastName", lnameString);
-        insertProperties.setProperty("donorFirstName", fnameString);
-        insertProperties.setProperty("donorPhone", phoneString);
-        insertProperties.setProperty("donorEmail", emailString);
+        insertProperties.setProperty("barcode", barcodeField.getText());
+        insertProperties.setProperty("gender", genderField.getText());
+        insertProperties.setProperty("size", sizeField.getText());
+        insertProperties.setProperty("articleTypeId", articleField.getText());
+        insertProperties.setProperty("color1Id", colorField.getText());
+        insertProperties.setProperty("color2Id", color2Field.getText());
+        insertProperties.setProperty("brand", brandField.getText());
+        insertProperties.setProperty("notes", notesField.getText());
+        insertProperties.setProperty("donorLastName", lnameField.getText());
+        insertProperties.setProperty("donorFirstName", fnameField.getText());
+        insertProperties.setProperty("donorPhone", phoneField.getText());
+        insertProperties.setProperty("donorEmail", emailField.getText());
 
-        //Call Clerk stateChangeRequest Method to create InventoryItem
-        myModel.stateChangeRequest("AddInventoryItem", insertProperties);
+        //
+        myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
 
     }
 
@@ -387,9 +385,23 @@ public class AddInventoryItemView extends View {
 		return statusLog;
 	}
 
-    @Override
+    //updateState-----------------------------------------------
     public void updateState(String key, Object value) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateState'");
+        clearErrorMessage();
+
+        switch (key) {
+            case "TransactionStatus":
+                displayMessage((String)value);
+        }
     }
+
+    //displayMessage()------------------------------------------
+    public void displayMessage(String message){
+        statusLog.displayMessage(message);
+    }
+
+    //clearErrorMessage()----------------------------------------
+    public void clearErrorMessage() {
+        statusLog.clearErrorMessage();
+    }//---------------------------------------------------------
 }//END CLASS=============================================================
