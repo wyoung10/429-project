@@ -3,6 +3,7 @@ package model;
 
 // system imports
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -173,8 +174,7 @@ public class ArticleType extends EntityBase implements IView
 			else
 			{
 				// insert
-				Integer id =
-						insertAutoIncrementalPersistentState(mySchema, persistentState);
+				Integer id = insertAutoIncrementalPersistentState(mySchema, persistentState);
 				persistentState.setProperty("id", "" + id.intValue());
 				updateStatusMessage = "ArticleType data for new ArticleType : " +  persistentState.getProperty("id")
 						+ "installed successfully in database!";
