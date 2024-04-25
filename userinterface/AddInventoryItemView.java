@@ -57,6 +57,10 @@ public class AddInventoryItemView extends View {
     protected TextField phoneField;
     protected TextField emailField;
 
+    protected String articleTypeId;
+
+    protected String color1Id;
+
     /*CONSTRUCTOR
      * Takes model Object
      */
@@ -278,21 +282,34 @@ public class AddInventoryItemView extends View {
                         };//End gender verification
 
                         //Determine article type from next two digits
-                        String articleBarPrefix = barcodeTempString.substring(1, 3);
-                        ArticleType article = new ArticleType(articleBarPrefix);
-                        articleField.setText(article.getState("name").toString());
-                        articleField.setEditable(true);
+                        try {
+                            String articleBarPrefix = barcodeTempString.substring(1, 3);
+                            ArticleType article = new ArticleType(articleBarPrefix);
+                            articleField.setText(article.getState("barcodePrefix").toString() +
+                                    ", (" + article.getState("description").toString() + ")");
+                            articleTypeId = article.getState("id").toString();
+                            articleField.setEditable(true);
+                        } catch (InvalidPrimaryKeyException exc) {
+                            articleField.setText("Article was not found. Please enter Article ID");
+                        }
                         //End Article Type----------------------------------------
 
                         //Determine color1 from next two digits
-                        String colorBarPrefix = barcodeTempString.substring(3, 5);
+                        try {
+                            String colorBarPrefix = barcodeTempString.substring(3, 5);
+                            colorBarPrefix.toCharArray();
                             model.Color color = new model.Color(colorBarPrefix);
-                            colorField.setText(color.getState("name").toString());
+                            colorField.setText(color.getState("barcodePrefix").toString() +
+                                    ", (" + color.getState("description").toString() + ")");
+                            color1Id = color.getState("id").toString();
                             colorField.setEditable(true);
+                        } catch (InvalidPrimaryKeyException exc) {
+                            colorField.setText("Color was not found. Please enter Color ID");
+                        }
                         //End Color---------------------------------------------
 
                     }//End if else for barcode parse
-                } catch (NumberFormatException | InvalidPrimaryKeyException exc){
+                } catch (NumberFormatException exc){
                     barcodeField.setText("Please Enter Barcode");
                 }//End trycatch block                
             }//End changed
@@ -334,14 +351,55 @@ public class AddInventoryItemView extends View {
     
     }//End createFormContents------------------------------------------
 
-    /*processSubAction---------------------
-     * Handles what happens upon pressing submit
-     *  WIP
+    /**==========================================================================
+     * processSubAction
+     *
+     * on submit button press, validate required fields and then pass properties
+     * object to constructor via transaction.
+     *
+     * @param e submit button press event.
+     *
      */
     public void processSubAction(Event e){
         //Validate user input
+        if (barcodeField.getText().isEmpty()){
+            displayMessage("Barcode Field Cannot Be Empty!");
+        } else if (sizeField.getText().isEmpty()) {
+            displayMessage("Size Field Cannot Be Empty!");
+        } else if (genderField.getText().isEmpty()) {
+            displayMessage("Gender Field Cannot Be Empty!");
+        } else if (articleField.getText().isEmpty()) {
+            displayMessage("");
+        } else if (colorField.getText().isEmpty()) {
+            displayMessage("Color Field Cannot Be Empty!");
+        } else {
 
-        //Parse barcode for article, gender, primary color
+            //Create properties and keys
+            Properties insertProperties = new Properties();
+            insertProperties.setProperty("barcode", barcodeField.getText());
+            insertProperties.setProperty("gender", genderField.getText());
+            insertProperties.setProperty("size", sizeField.getText());
+            insertProperties.setProperty("articleTypeId", articleTypeId);
+            insertProperties.setProperty("color1Id", color1Id);
+            insertProperties.setProperty("color2Id", color2Field.getText());
+            insertProperties.setProperty("brand", brandField.getText());
+            insertProperties.setProperty("notes", notesField.getText());
+            insertProperties.setProperty("donorLastName", lnameField.getText());
+            insertProperties.setProperty("donorFirstName", fnameField.getText());
+            insertProperties.setProperty("donorPhone", phoneField.getText());
+            insertProperties.setProperty("donorEmail", emailField.getText());
+
+            //Try to add inventory item
+            try {
+                //Tell transaction to DoAddIventoryItem
+                myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
+
+                //Message
+                displayMessage("InventoryItem was successfully added!");
+            } catch (Exception ex) {
+                displayMessage("InventoryItem was not added!");
+            }//End try catch block
+        }//End if else block
 
 //        //Convert input to strings
 //        String barcodeString = barcodeField.getText();
@@ -356,26 +414,7 @@ public class AddInventoryItemView extends View {
 //        String lnameString = lnameField.getText();
 //        String phoneString = phoneField.getText();
 //        String emailString = emailField.getText();
-
-        //Create properties and keys
-        Properties insertProperties = new Properties();
-        insertProperties.setProperty("barcode", barcodeField.getText());
-        insertProperties.setProperty("gender", genderField.getText());
-        insertProperties.setProperty("size", sizeField.getText());
-        insertProperties.setProperty("articleTypeId", articleField.getText());
-        insertProperties.setProperty("color1Id", colorField.getText());
-        insertProperties.setProperty("color2Id", color2Field.getText());
-        insertProperties.setProperty("brand", brandField.getText());
-        insertProperties.setProperty("notes", notesField.getText());
-        insertProperties.setProperty("donorLastName", lnameField.getText());
-        insertProperties.setProperty("donorFirstName", fnameField.getText());
-        insertProperties.setProperty("donorPhone", phoneField.getText());
-        insertProperties.setProperty("donorEmail", emailField.getText());
-
-        //
-        myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
-
-    }
+    }//End processSubAction-----------------------------------------------------------------
 
     // Create the status log field
 	//-------------------------------------------------------------

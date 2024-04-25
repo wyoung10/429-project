@@ -67,6 +67,8 @@ public class Color extends EntityBase {
         }
     }
 
+
+
     // Can also be used to create a NEW Account (if the system it is part of
     // allows for a new account to be set up)
     //----------------------------------------------------------
@@ -85,6 +87,57 @@ public class Color extends EntityBase {
         }
 
     }
+
+    /**=======================================================================
+     * CONSTRUCTOR 3 (FOR VIEW)
+     *
+     * Constructor will take char array to differentiate it from first constructor
+     * Convert char array to string so that constructor will search for barcode prefix.     *
+     *
+     * @param array char array passed from AddInventoryItemView
+     */
+
+    public Color(char[] array) throws InvalidPrimaryKeyException{
+        super(myTableName);
+
+        String barcodePrefix = new String(array);
+
+        setDependencies();
+        String query = "SELECT * FROM " + myTableName + " WHERE (barcodePrefix = " + barcodePrefix + ")";
+
+        Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+
+        // You must get one account at least
+        if (allDataRetrieved != null) {
+            int size = allDataRetrieved.size();
+
+            // There should be EXACTLY one Color. More than that is an error
+            if (size != 1) {
+                throw new InvalidPrimaryKeyException("Multiple barcode prefixes matching : "
+                        + barcodePrefix + " found.");
+            } else {
+                // copy all the retrieved data into persistent state
+                Properties retrievedColorData = allDataRetrieved.elementAt(0);
+                persistentState = new Properties();
+
+                Enumeration allKeys = retrievedColorData.propertyNames();
+                while (allKeys.hasMoreElements() == true) {
+                    String nextKey = (String) allKeys.nextElement();
+                    String nextValue = retrievedColorData.getProperty(nextKey);
+                    // accountNumber = Integer.parseInt(retrievedAccountData.getProperty("accountNumber"));
+
+                    if (nextValue != null) {
+                        persistentState.setProperty(nextKey, nextValue);
+                    }
+                }
+
+            }
+        }
+        else {
+            throw new InvalidPrimaryKeyException("No color with barcode Prefix : "
+                    + barcodePrefix + " found.");
+        }
+    }//END CONSTRUCTOR 3=================================================================
 
     public void modify(Properties props) {
         Enumeration allKeys = props.propertyNames();

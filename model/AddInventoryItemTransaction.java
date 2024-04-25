@@ -62,7 +62,7 @@ public class AddInventoryItemTransaction extends Transaction {
      * calls its update method to insert into database
      *
      * @param props Properties object passed from view
-     * @throws InvalidPrimaryKeyException 
+     * @throws InvalidPrimaryKeyException
      */
     public void processTransaction(Properties props){
         //Do getProperty for all fields
