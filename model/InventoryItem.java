@@ -47,14 +47,14 @@ public class InventoryItem extends EntityBase implements IView {
         Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
         
         //If value from table isn't null...
-        if (allDataRetrieved != null) //Should also have "&& (allDataRef...size() > 0))"
+        if (allDataRetrieved != null && (allDataRetrieved.size() > 0))
         {
             int size = allDataRetrieved.size();
 
             // There should be EXACTLY one record. Throw error otherwise
             if (size != 1)
             {
-                throw new InvalidPrimaryKeyException("Multiple items matching barcode : "
+                throw new InvalidPrimaryKeyException("Error: multiple items matching barcode : "
                         + barcode + " found.");
             }
             else
@@ -86,7 +86,7 @@ public class InventoryItem extends EntityBase implements IView {
         // If no inventory item exists, throw error
         else
         {
-            throw new InvalidPrimaryKeyException("No inventory item with barcode: "
+            throw new InvalidPrimaryKeyException("Error: no inventory item with barcode: "
                     + barcode + " found.");
         }
     }//End constructor1-------------------------------------------------------------------------------------------
