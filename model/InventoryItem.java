@@ -2,6 +2,7 @@ package model;
 
 //import packages
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -92,9 +93,9 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**===================================================================
      * CONSTUCTOR 2
-     * 
+     *
      * Constructor when passed Properties will create new object for insertion
-     * 
+     *
      * @param props passed from view with fields to create item
      */
     public InventoryItem(Properties props) {
@@ -123,7 +124,7 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**================================================================
      * setDependencies
-     * 
+     *
      * sets delegate relationships
      */
     private void setDependencies()
@@ -135,7 +136,7 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**==============================================================
      * update
-     * 
+     *
      * calls updateStateInDatabase. Equivalent to save()
      */
     public void update(){
@@ -144,11 +145,11 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**==============================================================
      * updateStateInDatabase
-     * 
+     *
      * If object already existed then update in database so change its values
-     * 
+     *
      * If object didn't exist then object must be inserted into database
-     *  
+     *
      * This based on preexist boolean
      */
     private void updateStateInDatabase(){
@@ -162,8 +163,10 @@ public class InventoryItem extends EntityBase implements IView {
                 updatePersistentState(mySchema, persistentState, whereClause);
                 updateStatusMessage = "Inventory Item Updated!";
             } else { //insert if not preexists
+
                 Integer id = insertAutoIncrementalPersistentState(
                         mySchema, persistentState);
+
                 persistentState.setProperty("id", "" + id);
                 updateStatusMessage = "Inventory Item created in database!";
             }
@@ -175,10 +178,10 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**==========================================================
      * updateState
-     * 
+     *
      * passes key and value to stateChangeRequest
-     * 
-     * @param key action to be done 
+     *
+     * @param key action to be done
      * @param value ??
      */
     public void updateState(String key, Object value) {
@@ -188,10 +191,10 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**===========================================================
      * getState
-     * 
+     *
      * returns the corresponding property of the key passed
      * if asking for status message return updateStatusMessage
-     * 
+     *
      * @param key property to be returned
      */
     public Object getState(String key) {
@@ -204,9 +207,9 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**=============================================================
      * stateChangeRequest
-     * 
+     *
      * updates subscriber (Clerk) based on passed key and value
-     * 
+     *
      * @param key key for Clerk's statechangerequest
      * @param value ??
      */
@@ -218,9 +221,9 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**===============================================================
      * initializeSchema
-     * 
-     * creates schema of table 
-     * 
+     *
+     * creates schema of table
+     *
      * @param tableName name of the matching table in database
      */
     protected void initializeSchema(String tableName) {
@@ -231,7 +234,7 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**==============================================================
      * toString
-     * 
+     *
      * returns string with object's fields
      */
     public String toString(){
@@ -242,9 +245,9 @@ public class InventoryItem extends EntityBase implements IView {
 
     /**===========================================================
      * getEntryListView
-     * 
+     *
      * creates vector for table display
-     * 
+     *
      * @return v vector of obejct properties
      */
     public Vector<String> getEntryListView() {

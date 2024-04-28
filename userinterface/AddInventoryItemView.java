@@ -5,8 +5,10 @@ import java.sql.SQLException;
 import java.util.Observable;
 // system imports
 import java.util.Properties;
+import java.time.*;
 // nothing
 //git practice commit amend
+import java.time.format.DateTimeFormatter;
 
 import exception.InvalidPrimaryKeyException;
 import javafx.event.Event;
@@ -56,6 +58,12 @@ public class AddInventoryItemView extends View {
     protected TextField lnameField;
     protected TextField phoneField;
     protected TextField emailField;
+
+    protected String articleTypeId;
+
+    protected String color1Id;
+
+    protected String color2Id = "NULL";
 
     /*CONSTRUCTOR
      * Takes model Object
@@ -124,7 +132,7 @@ public class AddInventoryItemView extends View {
         grid.add(barcodeField, 1, 0);
 
         //-----Gender Label and Field-----
-        Text genderLabel = new Text("Gender: ");
+        Text genderLabel = new Text("Gender (M/W): ");
         genderLabel.setWrappingWidth(150);
         genderLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(genderLabel, 0, 1);
@@ -134,7 +142,7 @@ public class AddInventoryItemView extends View {
         grid.add(genderField, 1, 1);
 
         //-----Article Label and Field-----
-        Text articleLabel = new Text("Article Type: ");
+        Text articleLabel = new Text("Article Type (Barcode Prefix): ");
         articleLabel.setWrappingWidth(150);
         articleLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(articleLabel, 0, 2);
@@ -144,7 +152,7 @@ public class AddInventoryItemView extends View {
         grid.add(articleField, 1, 2);
 
         //-----Primary Color Label and Field-----
-        Text colorLabel = new Text("Primary Color: ");
+        Text colorLabel = new Text("Primary Color (Barcode Prefix): ");
         colorLabel.setWrappingWidth(150);
         colorLabel.setTextAlignment(TextAlignment.RIGHT);
         grid.add(colorLabel, 0, 3);
@@ -154,7 +162,7 @@ public class AddInventoryItemView extends View {
         grid.add(colorField, 1, 3);
 
         //------Color2 Label and Field-----
-        Text color2Label = new Text("Secondary Color: ");
+        Text color2Label = new Text("Secondary Color (Barcode Prefix): ");
         color2Label.setWrappingWidth(150);
         color2Label.setTextAlignment(TextAlignment.RIGHT);
         grid.add(color2Label, 0, 4);
@@ -233,7 +241,8 @@ public class AddInventoryItemView extends View {
         emailField.setEditable(true);
         grid.add(emailField, 1, 11);
 
-        /** barcodeField upon losing focus:
+        /** ---BARCODE LOSS OF FOCUS---
+         * barcodeField upon losing focus:
          * -verify user input
          * -parse gender, article id, and primary color
          * -all other textfields will become editable
@@ -257,10 +266,15 @@ public class AddInventoryItemView extends View {
 
                     //Check that input is 8 digits
                     if (barcodeTempString.length() != 8){
-                        barcodeField.setText("Please Enter Barcode");
+                        barcodeField.setText("Barcode is incorrect length!");
                     } else {
                         //parse barcode for info
                         //char[] barcodeArray = barcodeTempString.toCharArray();
+                        
+                        //reset parse fields
+                        //genderField.clear();
+                        articleField.clear();
+                        colorField.clear();
 
                         //Determine gender from first digit
                         //char genderChar = barcodeArray[0];
@@ -278,25 +292,121 @@ public class AddInventoryItemView extends View {
                         };//End gender verification
 
                         //Determine article type from next two digits
-                        String articleBarPrefix = barcodeTempString.substring(1, 3);
-                        ArticleType article = new ArticleType(articleBarPrefix);
-                        articleField.setText(article.getState("name").toString());
-                        articleField.setEditable(true);
+                        try {
+                            String articleBarPrefix = barcodeTempString.substring(1, 3);
+                            ArticleType article = new ArticleType(articleBarPrefix);
+                            articleField.setText(article.getState("barcodePrefix").toString() +
+                                    ", (" + article.getState("description").toString() + ")");
+                            articleTypeId = article.getState("id").toString();
+                            articleField.setEditable(true);
+                        } catch (InvalidPrimaryKeyException exc) {
+                            articleField.setText("Article was not found. Please enter Article Barcode Prefix");
+                        }
                         //End Article Type----------------------------------------
 
                         //Determine color1 from next two digits
-                        String colorBarPrefix = barcodeTempString.substring(3, 5);
+                        try {
+                            String colorBarPrefix = barcodeTempString.substring(3, 5);
+                            colorBarPrefix.toCharArray();
                             model.Color color = new model.Color(colorBarPrefix);
-                            colorField.setText(color.getState("name").toString());
+                            colorField.setText(color.getState("barcodePrefix").toString() +
+                                    ", (" + color.getState("description").toString() + ")");
+                            color1Id = color.getState("id").toString();
                             colorField.setEditable(true);
+                        } catch (InvalidPrimaryKeyException exc) {
+                            colorField.setText("Color was not found. Please enter Color Barcode Prefix");
+                        }
                         //End Color---------------------------------------------
 
                     }//End if else for barcode parse
-                } catch (NumberFormatException | InvalidPrimaryKeyException exc){
+                } catch (NumberFormatException exc){
                     barcodeField.setText("Please Enter Barcode");
                 }//End trycatch block                
             }//End changed
         });//End focusProperty
+
+        /**---ARTICLETYPE LOSS OF FOCUS---
+         * Upon article field losing focus,
+         * search for article by barcode prefix.
+         * 
+         * This is intended to run only if user has edited article type after initial barcode parse
+         */
+        articleField.focusedProperty().addListener(new ChangeListener<Boolean>()
+        {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
+                
+                if (articleField.getText().length() == 2){
+
+                    String articleBarPrefix = articleField.getText();
+                    try {
+                        ArticleType article = new ArticleType(articleBarPrefix);
+                                articleField.setText(article.getState("barcodePrefix").toString() +
+                                        ", (" + article.getState("description").toString() + ")");
+                                articleTypeId = article.getState("id").toString();
+                                articleField.setEditable(true);
+                    } catch (InvalidPrimaryKeyException exc) {
+                        articleField.setText("Article Type could not be found");
+                    }//End try catch 
+                    
+                }//End if article field was changed
+
+            }//End changed
+
+        });//End loss of focus for article type
+
+        /**---COLOR LOSS OF FOCUS---
+         * Upon loss of focus on primary color field,
+         * Search and create new Color object and 
+         */
+        colorField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
+
+                if (colorField.getText().length() == 2){
+                    
+                    String colorBarPrefix = colorField.getText();
+                    try {
+                        colorBarPrefix.toCharArray();
+                        model.Color color = new model.Color(colorBarPrefix);
+                        colorField.setText(color.getState("barcodePrefix").toString() +
+                                ", (" + color.getState("description").toString() + ")");
+                        color1Id = color.getState("id").toString();
+                        colorField.setEditable(true);
+                    } catch (InvalidPrimaryKeyException exc) {
+                        colorField.setText("Color was not found. Please enter Color Barcode Prefix");
+                    }//End try catch block
+
+                }//End if color field was changed
+            }//End color1 changed
+        });//End color1 loss of focus
+
+        /**---COLOR2 LOSS OF FOCUS---
+         * Upon loss of focus on secondary color field
+         * search for color and create object.
+         * take id.
+         */
+        color2Field.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue, Boolean newPropertyValue) {
+
+                if (color2Field.getText().length() == 2 && !color2Field.getText().isEmpty()){
+                    
+                    String color2BarPrefix = color2Field.getText();
+                    try {
+                        color2BarPrefix.toCharArray();
+                        model.Color color2 = new model.Color(color2BarPrefix);
+                        color2Field.setText(color2.getState("barcodePrefix").toString() +
+                                ", (" + color2.getState("description").toString() + ")");
+                        color2Id = color2.getState("id").toString();
+                        color2Field.setEditable(true);
+                    } catch (InvalidPrimaryKeyException exc) {
+                        colorField.setText("Color was not found. Please enter Color Barcode Prefix");
+                    }//End try catch block
+                }//End if color2 field was changed
+            }//End color2 changed
+        });//End color2 loss of focus
+
 
         //====BUTTONS=====
         //Setup separate Hbox for submit and cancel button
@@ -334,14 +444,86 @@ public class AddInventoryItemView extends View {
     
     }//End createFormContents------------------------------------------
 
-    /*processSubAction---------------------
-     * Handles what happens upon pressing submit
-     *  WIP
+    /**==========================================================================
+     * processSubAction
+     *
+     * on submit button press, validate required fields and then pass properties
+     * object to constructor via transaction.
+     *
+     * @param e submit button press event.
+     *
      */
     public void processSubAction(Event e){
-        //Validate user input
 
-        //Parse barcode for article, gender, primary color
+        //Validate user input
+        if (barcodeField.getText().isEmpty() || barcodeField.getText().length() != 8){
+
+            displayMessage("Barcode Field Incorrect!");
+
+        } else if (sizeField.getText().isEmpty()) {
+
+            displayMessage("Size Field Cannot Be Empty!");
+
+        } else if (genderField.getText().isEmpty() || (!genderField.getText().equals("M") && !genderField.getText().equals("W"))) {
+
+            displayMessage("Gender Field Cannot Be Empty!");
+
+        } else if (articleField.getText().isEmpty() || articleTypeId.isEmpty()) {
+
+            displayMessage("Article Field Incorrect! Please reenter article type barcode prefix!");
+
+        } else if (colorField.getText().isEmpty() || color1Id.isEmpty()) {
+
+            displayMessage("Color Field Incorrect! Please reenter primary color barcode prefix!");
+
+        } else if ( !color2Field.getText().isEmpty() && color2Id.isEmpty()) {
+
+            displayMessage("Secondary Color Field Incorrect!");
+            
+        } else if (!phoneField.getText().isEmpty() && phoneField.getText().length() != 12) {
+            
+            displayMessage("Phone Entered is incorrect format!" + 
+                            "\nPlease reenter in XXX-XXX-XXXX format!");      
+
+        } else if (!emailField.getText().isEmpty() && !emailField.getText().contains("@")){
+
+            displayMessage("Email Entered is invalid!");
+
+        } else {//If all fields correct            
+
+            //Create properties and keys
+            Properties insertProperties = new Properties();
+            insertProperties.setProperty("barcode", barcodeField.getText());
+            insertProperties.setProperty("gender", genderField.getText());
+            insertProperties.setProperty("size", sizeField.getText());
+            insertProperties.setProperty("articleTypeId", articleTypeId);
+            insertProperties.setProperty("color1Id", color1Id);
+            insertProperties.setProperty("color2Id", color2Id);
+            insertProperties.setProperty("brand", brandField.getText());
+            insertProperties.setProperty("notes", notesField.getText());
+            insertProperties.setProperty("donorLastName", lnameField.getText());
+            insertProperties.setProperty("donorFirstName", fnameField.getText());
+            insertProperties.setProperty("donorPhone", phoneField.getText());
+            insertProperties.setProperty("donorEmail", emailField.getText());
+
+            //TEST get date
+            LocalDate currentDate = LocalDate.now();
+            DateTimeFormatter myFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String currentDateString = currentDate.format(myFormat);
+            insertProperties.setProperty("dateDonated", currentDateString);
+
+
+            //Try to add inventory item
+            try {
+                //Tell transaction to DoAddIventoryItem
+                myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
+
+                //Message
+                displayMessage("Inventory Item was successfully added!");
+            } catch (Exception ex) {
+                displayMessage("Inventory Item was not added!");
+            }//End try catch block
+        }//End if else block
 
 //        //Convert input to strings
 //        String barcodeString = barcodeField.getText();
@@ -356,26 +538,7 @@ public class AddInventoryItemView extends View {
 //        String lnameString = lnameField.getText();
 //        String phoneString = phoneField.getText();
 //        String emailString = emailField.getText();
-
-        //Create properties and keys
-        Properties insertProperties = new Properties();
-        insertProperties.setProperty("barcode", barcodeField.getText());
-        insertProperties.setProperty("gender", genderField.getText());
-        insertProperties.setProperty("size", sizeField.getText());
-        insertProperties.setProperty("articleTypeId", articleField.getText());
-        insertProperties.setProperty("color1Id", colorField.getText());
-        insertProperties.setProperty("color2Id", color2Field.getText());
-        insertProperties.setProperty("brand", brandField.getText());
-        insertProperties.setProperty("notes", notesField.getText());
-        insertProperties.setProperty("donorLastName", lnameField.getText());
-        insertProperties.setProperty("donorFirstName", fnameField.getText());
-        insertProperties.setProperty("donorPhone", phoneField.getText());
-        insertProperties.setProperty("donorEmail", emailField.getText());
-
-        //
-        myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
-
-    }
+    }//End processSubAction-----------------------------------------------------------------
 
     // Create the status log field
 	//-------------------------------------------------------------
