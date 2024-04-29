@@ -183,7 +183,7 @@ public class InventoryItem extends EntityBase implements IView {
 				whereClause.setProperty("barcode",
 						persistentState.getProperty("barcode"));
 				updatePersistentState(mySchema, persistentState, whereClause);
-				updateStatusMessage = "Inventory data for barcode : " + persistentState.getProperty("barcode") + " updated successfully in database!";
+				updateStatusMessage = "Inventory item updated successfully!";
 			}
 			else
 			{
@@ -191,8 +191,7 @@ public class InventoryItem extends EntityBase implements IView {
 				Integer code =
                     insertPersistentState(mySchema, persistentState);
 				preexists = true;
-				updateStatusMessage = "Inventory data for new Inventory : " +  persistentState.getProperty("barcode")
-						+ "installed successfully in database!";
+				updateStatusMessage = "Inventory data added successfully!";
 			}
         } catch (SQLException ex) {
             updateStatusMessage = "Error: " + ex.getMessage();
@@ -224,7 +223,8 @@ public class InventoryItem extends EntityBase implements IView {
     public Object getState(String key) {
         if (key.equals("UpdateStatusMessage") == true)
             return updateStatusMessage;
-
+        if (key.equals("PersistantState") == true)
+            return persistentState;
         return persistentState.getProperty(key);
     }//End getState------------------------------------------
 
@@ -288,7 +288,7 @@ public class InventoryItem extends EntityBase implements IView {
 	 * Set status to inactive
 	 */
 	public void delete() {
-        persistentState.setProperty("status", "Inactive");
+        persistentState.setProperty("status", "Removed");
     }//End delete----------------------------------------
 
 	/*modify--------------------------------------------

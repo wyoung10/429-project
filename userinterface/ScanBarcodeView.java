@@ -61,6 +61,7 @@ public class ScanBarcodeView extends View
         getChildren().add(container);
 
         myModel.subscribe("TransactionStatus", this);
+        myModel.subscribe("TransactionError", this);
     }
 
 
@@ -118,7 +119,7 @@ public class ScanBarcodeView extends View
             @Override
             public void handle(ActionEvent e) {
                 clearErrorMessage();
-                myModel.stateChangeRequest("CancelModifyInventory", null);
+                myModel.stateChangeRequest("CancelScanBarcode", null);
             }
         });
         doneCont.getChildren().add(cancelButton);
@@ -134,7 +135,6 @@ public class ScanBarcodeView extends View
                 // prop.setProperty("barcode", barcodeString);
                 // myModel.stateChangeRequest("DoScanBarcode", prop);
                 processAction(actionEvent);
-                statusLog.displayErrorMessage((String) myModel.getState("TransactionError"));
             }
         });
         doneCont.getChildren().add(submitButton);
@@ -178,8 +178,10 @@ public class ScanBarcodeView extends View
                 displayErrorMessage(val);
             } else {
                 displayMessage(val);
-
             }
+        }
+        if (key.equals("TransactionError")) {
+            displayErrorMessage((String)value);
         }
     }
 

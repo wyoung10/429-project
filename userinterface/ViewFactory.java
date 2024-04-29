@@ -31,6 +31,8 @@ public class ViewFactory {
 				return new ScanBarcodeView(model);
 			case "ModifyInventoryView":
 				return new ModifyInventoryView(model);
+			case "DeleteInventoryItemView":
+				return new DeleteInventoryItemView(model);
 			default:
 				return null;
 		}
