@@ -43,6 +43,9 @@ public class TransactionFactory {
             case "DeleteInventory":
                 retValue = new DeleteInventoryItemTransaction();
                 break;
+            case "CheckoutInventory":
+                retValue = new CheckoutInventoryItemTransaction();
+                break;
             default:
                 System.err.println("Invalid transaction type");
         }
