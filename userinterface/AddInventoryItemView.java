@@ -598,8 +598,7 @@ public class AddInventoryItemView extends View {
                 //Tell transaction to DoAddIventoryItem
                 myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
             } catch (Exception ex) {
-                System.err.println(ex);
-                displayMessage("Inventory Item was not added!");
+                displayErrorMessage("An error occurred while trying to add item!");
             }//End try catch block
         //}//End if else block
        
