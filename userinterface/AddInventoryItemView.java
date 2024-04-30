@@ -66,7 +66,7 @@ public class AddInventoryItemView extends View {
 
     protected String color1Id;
 
-    protected String color2Id = "NULL";
+    protected String color2Id = "";
 
     protected int sizeNumericTest;
 
@@ -541,64 +541,19 @@ public class AddInventoryItemView extends View {
             //create properties object
             Properties insertProperties = new Properties();
 
-            //if both phone and email empty
-            if (emailField.getText().isEmpty() && phoneField.getText().isEmpty()){
-                //Create properties and keys
-                insertProperties.setProperty("barcode", barcodeField.getText());
-                insertProperties.setProperty("gender", genderField.getText());
-                insertProperties.setProperty("size", sizeField.getText());
-                insertProperties.setProperty("articleTypeId", articleTypeId);
-                insertProperties.setProperty("color1Id", color1Id);
-                insertProperties.setProperty("color2Id", color2Id);
-                insertProperties.setProperty("brand", brandField.getText());
-                insertProperties.setProperty("notes", notesField.getText());
-                insertProperties.setProperty("donorLastName", lnameField.getText());
-                insertProperties.setProperty("donorFirstName", fnameField.getText());
-
-            } else if (phoneField.getText().isEmpty() && !emailField.getText().isEmpty()){//if phone field is empty
-
-                insertProperties.setProperty("barcode", barcodeField.getText());
-                insertProperties.setProperty("gender", genderField.getText());
-                insertProperties.setProperty("size", sizeField.getText());
-                insertProperties.setProperty("articleTypeId", articleTypeId);
-                insertProperties.setProperty("color1Id", color1Id);
-                insertProperties.setProperty("color2Id", color2Id);
-                insertProperties.setProperty("brand", brandField.getText());
-                insertProperties.setProperty("notes", notesField.getText());
-                insertProperties.setProperty("donorLastName", lnameField.getText());
-                insertProperties.setProperty("donorFirstName", fnameField.getText());
-                insertProperties.setProperty("donorEmail", emailField.getText());
-
-            } else if (emailField.getText().isEmpty() && !phoneField.getText().isEmpty()){ //If email field is empty
-
-                //Create properties and keys
-                insertProperties.setProperty("barcode", barcodeField.getText());
-                insertProperties.setProperty("gender", genderField.getText());
-                insertProperties.setProperty("size", sizeField.getText());
-                insertProperties.setProperty("articleTypeId", articleTypeId);
-                insertProperties.setProperty("color1Id", color1Id);
-                insertProperties.setProperty("color2Id", color2Id);
-                insertProperties.setProperty("brand", brandField.getText());
-                insertProperties.setProperty("notes", notesField.getText());
-                insertProperties.setProperty("donorLastName", lnameField.getText());
-                insertProperties.setProperty("donorFirstName", fnameField.getText());
-                insertProperties.setProperty("donorPhone", phoneField.getText());
-            } else { //if everything filled out
-
-                //Create properties and keys
-                insertProperties.setProperty("barcode", barcodeField.getText());
-                insertProperties.setProperty("gender", genderField.getText());
-                insertProperties.setProperty("size", sizeField.getText());
-                insertProperties.setProperty("articleTypeId", articleTypeId);
-                insertProperties.setProperty("color1Id", color1Id);
-                insertProperties.setProperty("color2Id", color2Id);
-                insertProperties.setProperty("brand", brandField.getText());
-                insertProperties.setProperty("notes", notesField.getText());
-                insertProperties.setProperty("donorLastName", lnameField.getText());
-                insertProperties.setProperty("donorFirstName", fnameField.getText());
-                insertProperties.setProperty("donorPhone", phoneField.getText());
-                insertProperties.setProperty("donorEmail", emailField.getText());
-            } 
+            //Create properties and keys
+            insertProperties.setProperty("barcode", barcodeField.getText());
+            insertProperties.setProperty("gender", genderField.getText());
+            insertProperties.setProperty("size", sizeField.getText());
+            insertProperties.setProperty("articleTypeId", articleTypeId);
+            insertProperties.setProperty("color1Id", color1Id);
+            insertProperties.setProperty("color2Id", color2Id);
+            insertProperties.setProperty("brand", brandField.getText());
+            insertProperties.setProperty("notes", notesField.getText());
+            insertProperties.setProperty("donorLastName", lnameField.getText());
+            insertProperties.setProperty("donorFirstName", fnameField.getText());
+            insertProperties.setProperty("donorPhone", phoneField.getText());
+            insertProperties.setProperty("donorEmail", emailField.getText());
             
             //TEST get date
             LocalDate currentDate = LocalDate.now();
@@ -616,6 +571,7 @@ public class AddInventoryItemView extends View {
                 //Message
                 displayMessage("Inventory Item was successfully added!");
             } catch (Exception ex) {
+                System.err.println(ex);
                 displayMessage("Inventory Item was not added!");
             }//End try catch block
         //}//End if else block
