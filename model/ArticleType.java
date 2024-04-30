@@ -88,6 +88,38 @@ public class ArticleType extends EntityBase implements IView
 		}
 	}
 
+	public void getArticleTypeById(String id) throws InvalidPrimaryKeyException {
+		String query = "SELECT * FROM " + myTableName + " WHERE id = " + id + " and status='Active'";
+
+		Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+
+        if (allDataRetrieved != null && allDataRetrieved.size() > 0) {
+            int size = allDataRetrieved.size();
+
+            if (size != 1) {
+                throw new InvalidPrimaryKeyException("Multiple ids matching : "
+                        + id + " found.");
+            } else {
+                Properties retrievedArticleTypeData = allDataRetrieved.elementAt(0);
+                persistentState = new Properties();
+
+                Enumeration allKeys = retrievedArticleTypeData.propertyNames();
+                while (allKeys.hasMoreElements() == true) {
+                    String nextKey = (String) allKeys.nextElement();
+                    String nextValue = retrievedArticleTypeData.getProperty(nextKey);
+
+                    if (nextValue != null) {
+                        persistentState.setProperty(nextKey, nextValue);
+                    }
+                }				
+            }
+        }
+        else {
+            throw new InvalidPrimaryKeyException("No articleType matching id : "
+                    + id + " found.");
+        }
+	 }
+
 	// Can also be used to create a NEW Book (if the system it is part of
 	// allows for a new account to be set up)
 	//----------------------------------------------------------

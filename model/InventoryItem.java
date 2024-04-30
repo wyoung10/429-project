@@ -136,6 +136,43 @@ public class InventoryItem extends EntityBase implements IView {
 			persistentState.getProperty("alphaCode");
 	}
 
+    public void getDonatedInventoryItemByBarcode(String barcode) throws InvalidPrimaryKeyException {
+        String query = "SELECT * FROM " + myTableName + " WHERE barcode = " + barcode + " and status='Donated'";
+
+        Vector<Properties> allDataRetrieved = getSelectQueryResult(query);
+        
+        if (allDataRetrieved != null && (allDataRetrieved.size() > 0)) {
+            int size = allDataRetrieved.size();
+
+            if (size != 1) {
+                throw new InvalidPrimaryKeyException("Error: multiple items matching barcode : "
+                        + barcode + " found.");
+            }
+            else {
+                Properties retrievedInvenItemData = allDataRetrieved.elementAt(0);
+                persistentState = new Properties();
+
+                Enumeration allKeys = retrievedInvenItemData.propertyNames();
+                while (allKeys.hasMoreElements() == true)
+                {
+                    String nextKey = (String)allKeys.nextElement();
+                    String nextValue = retrievedInvenItemData.getProperty(nextKey);
+
+                    if (nextValue != null) {
+                        persistentState.setProperty(nextKey, nextValue);
+                    }
+                }
+            }
+            preexists = true;
+        }
+
+        else {
+            throw new InvalidPrimaryKeyException("Error: no inventory item with barcode: "
+                    + barcode + " found.");
+        }
+    }
+
+
     /**================================================================
      * setDependencies
      *

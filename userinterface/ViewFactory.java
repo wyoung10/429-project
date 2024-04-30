@@ -1,6 +1,7 @@
 package userinterface;
 
 import impresario.IModel;
+import model.CheckoutInventoryItemTransaction;
 
 //==============================================================================
 public class ViewFactory {
@@ -33,6 +34,8 @@ public class ViewFactory {
 				return new ModifyInventoryView(model);
 			case "DeleteInventoryItemView":
 				return new DeleteInventoryItemView(model);
+			case "CheckoutInventoryItemView":
+				return new CheckoutInventoryItemView(model);
 			default:
 				return null;
 		}
