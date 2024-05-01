@@ -50,7 +50,7 @@ public class AddInventoryItemTransaction extends Transaction {
     protected void setDependencies() {
         dependencies = new Properties();
 
-        dependencies.setProperty("DoAddInventoryItem", "TransactionError");
+        dependencies.setProperty("DoAddInventoryItem", "TransactionStatus");
         dependencies.setProperty("CancelAddInventoryItem", "CancelTransaction");
         dependencies.setProperty("OK", "CancelTransaction");
 

@@ -391,7 +391,7 @@ public class AddInventoryItemView extends View {
                     }//End try catch 
                     
                 } else {
-                    displayMessage("Article Type Barcode Prefix was incorrect!");
+                    displayErrorMessage("Article Type Barcode Prefix was incorrect!");
                     articleField.setText("Please Reenter");
                     articleField.setEditable(true);
                     articleTypeId = "";
@@ -422,12 +422,12 @@ public class AddInventoryItemView extends View {
                         colorField.setEditable(true);
                     } catch (InvalidPrimaryKeyException exc) {
                         colorField.setText("Color was not found. Please enter Color Barcode Prefix");
-                        displayMessage("Color was not found. Please enter Color Barcode Prefix");
+                        displayErrorMessage("Color was not found. Please enter Color Barcode Prefix");
                         color1Id = "";
                         colorField.setEditable(true);
                     }//End try catch block
                 } else {
-                    displayMessage("Primary Color Barcode Prefix was incorrect!");
+                    displayErrorMessage("Primary Color Barcode Prefix was incorrect!");
                     colorField.setText("Please reenter");
                     colorDescField.clear();
                     color1Id = "";
@@ -460,7 +460,7 @@ public class AddInventoryItemView extends View {
                         color2Id = "";
                     }//End try catch block
                 } else if (!color2Field.getText().isEmpty()){
-                    displayMessage("Barcode Prefix was incorrect!");
+                    displayErrorMessage("Barcode Prefix was incorrect!");
                     color2Field.setText("Please reenter");
                     color2DesField.clear();
                     color2Id = "";
@@ -567,9 +567,6 @@ public class AddInventoryItemView extends View {
             try {
                 //Tell transaction to DoAddIventoryItem
                 myModel.stateChangeRequest("DoAddInventoryItem", insertProperties);
-
-                //Message
-                displayMessage("Inventory Item was successfully added!");
             } catch (Exception ex) {
                 System.err.println(ex);
                 displayMessage("Inventory Item was not added!");
@@ -590,15 +587,24 @@ public class AddInventoryItemView extends View {
     public void updateState(String key, Object value) {
         clearErrorMessage();
 
-        switch (key) {
-            case "TransactionStatus":
-                displayMessage((String)value);
+        if (key.equals("TransactionStatus")) {
+            String val = (String) value;
+            if ((val.startsWith("ERR")) || (val.startsWith("Err"))) {
+                displayErrorMessage(val);
+            } else {
+                displayMessage(val);
+            }
         }
     }
 
     //displayMessage()------------------------------------------
     public void displayMessage(String message){
         statusLog.displayMessage(message);
+    }
+
+    public void displayErrorMessage(String message)
+    {
+        statusLog.displayErrorMessage(message);
     }
 
     //clearErrorMessage()----------------------------------------
@@ -643,7 +649,7 @@ public class AddInventoryItemView extends View {
         //Validate barcode
         if (barcodeField.getText().isEmpty() || barcodeField.getText().length() != 8){
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             barcodeField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             errorFlag = true;
 
@@ -652,7 +658,7 @@ public class AddInventoryItemView extends View {
         //Validate size field length
         if (sizeField.getText().isEmpty()) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             sizeField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             sizeField.setText("Please enter a size");
             errorFlag = true;
@@ -662,7 +668,7 @@ public class AddInventoryItemView extends View {
         //Validate if size is a numeric field
         if (sizeNumericTest == 9999){
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             sizeField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             sizeField.setText("Size must be numeric");
             errorFlag = true;
@@ -671,7 +677,7 @@ public class AddInventoryItemView extends View {
         //Validate gender field
         if (genderField.getText().isEmpty() || (!genderField.getText().equals("M") && !genderField.getText().equals("W"))) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             genderField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             genderField.setText("Please enter only M or W");
             errorFlag = true;
@@ -681,7 +687,7 @@ public class AddInventoryItemView extends View {
         //Validate article field
         if (articleField.getText().isEmpty() || articleTypeId.isEmpty() || articleTypeId == null) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             articleField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             articleField.setText("Please reenter");
             articleTypeId = "";
@@ -692,7 +698,7 @@ public class AddInventoryItemView extends View {
         //Validate primary color
         if (colorField.getText().isEmpty() || color1Id.isEmpty() || color1Id == null) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             colorField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             colorField.setText("Please reenter");
             color1Id = "";
@@ -703,7 +709,7 @@ public class AddInventoryItemView extends View {
         //Validate secondary color
         if ( !color2Field.getText().isEmpty() && color2Id.isEmpty()) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             color2Field.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             color2Field.setText("Please reenter");
             color2Id = "";
@@ -714,7 +720,7 @@ public class AddInventoryItemView extends View {
         //Validate phone field if it was not empty
         if (!phoneField.getText().isEmpty() && phoneField.getText().length() != 12) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             phoneField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             phoneField.setText("Must be in XXX-XXX-XXXX format!");   
             errorFlag = true;   
@@ -724,7 +730,7 @@ public class AddInventoryItemView extends View {
         //Validate email field if it was not empty. Must contain "@"
         if (!emailField.getText().isEmpty() && !emailField.getText().contains("@")){
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             emailField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             errorFlag = true;
 
@@ -733,7 +739,7 @@ public class AddInventoryItemView extends View {
         //Validate email field if it was not empty. Must contain "."
         if (!emailField.getText().isEmpty() && !emailField.getText().contains(".")) {
 
-            displayMessage("Submit Failed! Error in highlighted fields!");
+            displayErrorMessage("Submit Failed! Error in highlighted fields!");
             emailField.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
             errorFlag = true;
 
