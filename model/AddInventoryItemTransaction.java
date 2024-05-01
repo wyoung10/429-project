@@ -3,6 +3,8 @@ package model;
 // system imports
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -66,6 +68,17 @@ public class AddInventoryItemTransaction extends Transaction {
      */
     public void processTransaction(Properties props){
         //Do getProperty for all fields
+
+        Enumeration allKeys = props.propertyNames();
+        while (allKeys.hasMoreElements()) {
+            String nextKey = (String) allKeys.nextElement();
+            String nextValue = props.getProperty(nextKey);
+
+            if (nextValue.equals("")) {
+                props.remove(nextKey);
+            }
+        }
+
         barcode = props.getProperty("barcode");
         gender = props.getProperty("gender");
         size = props.getProperty("size");
