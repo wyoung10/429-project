@@ -12,19 +12,19 @@ public class ArticleTypeCollection extends EntityBase {
         articleTypeList = new Vector<ArticleType>();
     }
 
-    // public void getArticleTypes() throws SQLException {
-    //     String query = "SELECT * FROM " + myTableName;
-    //     Vector<Properties> result = getSelectQueryResult(query);
-    //     if (result != null) {
-	// 		for (int i = 0; i < result.size(); i++) {
-	// 			Properties nextArticleTypeData = result.elementAt(i);
-	// 			ArticleType articleType = new ArticleType(nextArticleTypeData);
-	// 			if (articleType != null) {
-	// 				articleTypeList.add(articleType);
-	// 			}
-	// 		}
-	// 	}
-    // }
+    public void getArticleTypes() throws SQLException {
+        String query = "SELECT * FROM " + myTableName + " WHERE status = \"Active\"";
+        Vector<Properties> result = getSelectQueryResult(query);
+        if (result != null) {
+			for (int i = 0; i < result.size(); i++) {
+				Properties nextArticleTypeData = result.elementAt(i);
+				ArticleType articleType = new ArticleType(nextArticleTypeData);
+				if (articleType != null) {
+					articleTypeList.add(articleType);
+				}
+			}
+		}
+    }
 
     public void display() {
         if (articleTypeList.size() == 0) {

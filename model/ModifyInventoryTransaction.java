@@ -19,7 +19,6 @@ import userinterface.View;
 import userinterface.ViewFactory;
 
 public class ModifyInventoryTransaction extends Transaction{
-    private String transactionErrorMessage = "";
     private String transactionStatusMessage = "";
 
     private String barcode;
@@ -36,10 +35,11 @@ public class ModifyInventoryTransaction extends Transaction{
     @Override
     protected void setDependencies() {
         dependencies = new Properties();
-		dependencies.setProperty("DoModifyInventory", "TransactionError");
-		dependencies.setProperty("CancelModifyInventory", "CancelTransaction");
-        dependencies.setProperty("DoScanBarcode", "TransactionError");
+        dependencies.setProperty("DoScanBarcode", "TransactionStatus");
+		dependencies.setProperty("DoModifyInventory", "TransactionStatus");
+        dependencies.setProperty("CancelModifyInventory", "TransactionStatus");
         dependencies.setProperty("CancelScanBarcode", "CancelTransaction");
+
 		myRegistry.setDependencies(dependencies);
     }
 
@@ -65,13 +65,17 @@ public class ModifyInventoryTransaction extends Transaction{
         switch (key) {
             case "TransactionStatus":
                 return transactionStatusMessage;
-            case "TransactionError":
-                return transactionErrorMessage;
-            case "articleTypeDesc":
-                return articleType.getState("description");
-            case "color1Desc":
-                return color1.getState("description");
-            case "color2Desc":
+            case "articleTypeBarcodePF":
+                return articleType.getState("barcodePrefix");
+            case "color1BarcodePF":
+                return color1.getState("barcodePrefix");
+            case "articleType":
+                return articleType;
+            case "color1":
+                return color1;
+            case "color2":
+                return color2;
+            case "color2BarcodePF":
                 if (color2 != null) {
                     return color2.getState("description");
                 }
@@ -111,25 +115,21 @@ public class ModifyInventoryTransaction extends Transaction{
                 boolean isFound = false;
                 isFound = scanBarcode((Properties) value);
                 if (isFound) {
-                    transactionErrorMessage = "";
+                    transactionStatusMessage = "";
                     createAndShowModifyInventoryView();
                 } else {
-                    transactionErrorMessage = "No Inventory Item found";
+                    System.out.println("barcode: " + barcode + " not found");
+                    transactionStatusMessage = "No Inventory Item found";
                 }
                 break;
-            case "Modify":
+            case "DoModifyInventory":
                 modify((Properties) value);
                 Properties barcodeProp = new Properties();
                 barcodeProp.setProperty("barcode", barcode);
                 scanBarcode(barcodeProp);
-                createAndShowModifyInventoryView();
-                transactionStatusMessage = "Successfully Modified";
                 break;
             case "CancelModifyInventoryItem":
                 swapToView(createView());
-                break;
-            case "CancelScanBarcode":
-                
                 break;
             default:
                 System.err.println("ModifyInventoryTransaction: invalid key for stateChangeRequest " + key);
@@ -153,10 +153,8 @@ public class ModifyInventoryTransaction extends Transaction{
             }
             transactionStatusMessage = (String)item.getState("UpdateStatusMessage");
             return true;
-        } catch (InvalidPrimaryKeyException e) {
-            System.out.println(e.getMessage());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            transactionStatusMessage = e.getMessage();
         }
 
         return false;
@@ -176,48 +174,15 @@ public class ModifyInventoryTransaction extends Transaction{
 		swapToView(currentScene);
 	}
     
-    protected void modify(Properties prop) {
+    protected void modify(Properties props) {
+        // preserve props that arent on modify screen
         String barcode = (String) item.getState("barcode");
-        String articleTypeId = (String) item.getState("articleTypeId");
-        String color1 = (String) item.getState("color1Id");
-        String color2 = (String) item.getState("color2Id");
-
-        String receiverFirstName = (String) item.getState("receiverFirstName");
-        String receiverLastName = (String) item.getState("receiverLastName");
-        String receiverNetId = (String) item.getState("receiverNetId");
         String dateDonated = (String) item.getState("dateDonated");
-        String dateTaken = (String) item.getState("dateTaken");
-        String statusString = (String) item.getState("status");
-        String barcodeString = (String) item.getState("barcode");
-
-        if (!(receiverFirstName == null)) {
-            if (!receiverFirstName.isEmpty())
-                prop.setProperty("receiverFirstName", receiverFirstName);
-        }
-
-        if (!(receiverLastName == null)) {
-            if (!receiverLastName.isEmpty())
-                prop.setProperty("receiverLastName", receiverLastName);
-        }
-
-        if (receiverNetId != null) {
-            if (!receiverNetId.isEmpty()) {
-                prop.setProperty("receiverNetId", receiverNetId);
-            }
-        }
-
-        prop.setProperty("status", statusString);
-        prop.setProperty("barcode", barcodeString);
-        prop.setProperty("dateDonated", dateDonated);
-
-        prop.setProperty("barcode", barcode);
-        prop.setProperty("color1Id", color1);
-        prop.setProperty("color2Id", color2);
-        prop.setProperty("articleTypeId", articleTypeId);
+        props.setProperty("barcode", barcode);
+        props.setProperty("dateDonated", dateDonated);
 
         item.removeItem();
-
-        InventoryItem tempItem = new InventoryItem(prop);
+        InventoryItem tempItem = new InventoryItem(props);
         tempItem.save();
         item = tempItem;
         barcode = (String) item.getState("barcode");

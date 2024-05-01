@@ -12,7 +12,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
@@ -25,11 +29,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.ArticleType;
+import model.ArticleTypeCollection;
+import model.Color;
+import model.ColorCollection;
 
 import java.util.Vector;
 import java.util.regex.Matcher;
@@ -48,15 +58,18 @@ public class ModifyInventoryView extends View {
     protected TextField gender;
     protected TextField size;
 
-    protected TextField articleTypeDesc;
-    protected TextField color1Desc;
-    protected TextField color2Desc;
+    protected ArticleTypeCollection articleTypes;
+    protected ColorCollection colors;
+
+    protected ComboBox<ArticleType> articleType;
+    protected ComboBox<Color> color1;
+    protected ComboBox<Color> color2;
 
     protected TextField brand;
     protected TextField notes;
 
-    protected TextField donorLastname;
-    protected TextField donorFirstname;
+    protected TextField donorLastName;
+    protected TextField donorFirstName;
     protected TextField donorPhone;
 
     protected TextField donorEmail;
@@ -76,6 +89,8 @@ public class ModifyInventoryView extends View {
 		VBox container = new VBox(10);
 		container.setPadding(new Insets(15, 5, 5, 5));
 
+        getComboBoxData();
+
 		// create our GUI components, add them to this panel
 		container.getChildren().add(createTitle());
 		container.getChildren().add(createFormContent());
@@ -90,7 +105,20 @@ public class ModifyInventoryView extends View {
         myModel.subscribe("TransactionStatus", this);
 	}
 
-	//--------------------------------------------------------------------------
+	protected void getComboBoxData() {
+        try {
+            articleTypes = new ArticleTypeCollection();
+            articleTypes.getArticleTypes();
+            colors = new ColorCollection();
+            colors.getColors();
+        }
+        catch (Exception exc) {
+            exc.printStackTrace();
+            displayErrorMessage(exc.getMessage());
+        }
+    }
+
+    //--------------------------------------------------------------------------
 	protected void populateFields()
 	{
 		getInventoryData();
@@ -102,15 +130,38 @@ public class ModifyInventoryView extends View {
         gender.setText((String)myModel.getState("gender"));
         size.setText((String)myModel.getState("size"));
 
-        articleTypeDesc.setText((String)(myModel.getState("articleTypeDesc")));
-        color1Desc.setText((String)myModel.getState("color1Desc"));
-        color2Desc.setText((String)myModel.getState("color2Desc"));
+        ArticleType currAT = (ArticleType)myModel.getState("articleType");
+        for (int i = 0; i < articleType.getItems().size(); i++) {
+            ArticleType next = articleType.getItems().get(i);
+            if (next.getState("id").equals(currAT.getState("id"))) {
+                articleType.setValue(next);
+                break;
+            }
+        }
+        Color currColor1 = (Color)myModel.getState("color1");
+        for (int i = 0; i < color1.getItems().size(); i++) {
+            Color next = color1.getItems().get(i);
+            if (next.getState("id").equals(currColor1.getState("id"))) {
+                color1.setValue(next);
+                break;
+            }
+        }
+        Color currColor2 = (Color)myModel.getState("color2");
+        if (currColor2 != null) {
+            for (int i = 0; i < color2.getItems().size(); i++) {
+                Color next = color2.getItems().get(i);
+                if (next.getState("id").equals(currColor2.getState("id"))) {
+                    color2.setValue(next);
+                    break;
+                }
+            }
+        }
 
         brand.setText((String)(myModel.getState("brand")));
         notes.setText((String)myModel.getState("notes"));
 
-        donorLastname.setText((String)(myModel.getState("donorLastName")));
-        donorFirstname.setText((String)myModel.getState("donorFirstName"));
+        donorLastName.setText((String)(myModel.getState("donorLastName")));
+        donorFirstName.setText((String)myModel.getState("donorFirstName"));
         donorPhone.setText((String)myModel.getState("donorPhone"));
 
         donorEmail.setText((String)(myModel.getState("donorEmail")));
@@ -160,8 +211,8 @@ public class ModifyInventoryView extends View {
         Text brandLabel = styleTextLable("Brand");
         Text notesLabel = styleTextLable("Notes");
 
-        Text donorLastnameLabel = styleTextLable("Donor Last Name");
-        Text donorFirstnameLabel = styleTextLable("Donot First Name");
+        Text donorLastNameLabel = styleTextLable("Donor Last Name");
+        Text donorFirstNameLabel = styleTextLable("Donor First Name");
 		Text donorPhoneLabel = styleTextLable("Donor Phone Number");
 
         Text donorEmailLabel = styleTextLable("Donor Email");
@@ -178,8 +229,8 @@ public class ModifyInventoryView extends View {
         grid.add(brandLabel, 0, 7);
 		grid.add(notesLabel, 0, 8);
 
-        grid.add(donorFirstnameLabel, 0, 9);
-		grid.add(donorLastnameLabel, 0, 10);
+        grid.add(donorFirstNameLabel, 0, 9);
+		grid.add(donorLastNameLabel, 0, 10);
 		grid.add(donorPhoneLabel, 0, 11);
 
         grid.add(donorEmailLabel, 0, 12);
@@ -188,15 +239,45 @@ public class ModifyInventoryView extends View {
         gender = new TextField("");
         size = new TextField("");
 
-        articleTypeDesc = new TextField("");
-        color1Desc = new TextField("");
-        color2Desc = new TextField("");
+        barcodeText = new Text();
+        gender = new TextField();
+        size = new TextField();
+        
+        ObservableList<ArticleType> articleTypeList = FXCollections.observableArrayList(
+            (Vector<ArticleType>)articleTypes.getState("ArticleTypes")
+        );
+        ObservableList<Color> colorList = FXCollections.observableArrayList(
+            (Vector<Color>)colors.getState("Colors")
+        );
 
-        brand = new TextField("");
-        notes = new TextField("");
+        articleType = new ComboBox<ArticleType>();
+        articleType.setCellFactory(listView -> makeArticleTypeCell());
+        articleType.setButtonCell(makeArticleTypeCell());
+        articleType.setItems(articleTypeList);
 
-        donorFirstname = new TextField("");
-        donorLastname = new TextField("");
+        color1 = new ComboBox<Color>();
+        color1.setCellFactory(listView -> makeColorCell());
+        color1.setButtonCell(makeColorCell());
+        color1.setItems(colorList);
+
+        color2 = new ComboBox<>();
+        color2.setCellFactory(listView -> makeColorCell());
+        color2.setButtonCell(makeColorCell());
+        color2.setItems(colorList);
+
+        Button clearColor2 = new Button("Clear");
+        clearColor2.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+                color2.setValue(null);
+			}
+		});
+        
+        brand = new TextField();
+        notes = new TextField();
+
+        donorFirstName = new TextField("");
+        donorLastName = new TextField("");
         donorPhone = new TextField("");
 
         donorEmail = new TextField("");
@@ -205,15 +286,16 @@ public class ModifyInventoryView extends View {
         grid.add(gender, 1, 2);
         grid.add(size, 1, 3);
 
-        grid.add(articleTypeDesc, 1, 4);
-        grid.add(color1Desc, 1, 5);
-        grid.add(color2Desc, 1, 6);
+        grid.add(articleType, 1, 4);
+        grid.add(color1, 1, 5);
+        grid.add(color2, 1, 6);
+        grid.add(clearColor2, 2, 6);
 
         grid.add(brand, 1, 7);
         grid.add(notes, 1, 8);
 
-        grid.add(donorFirstname, 1, 9);
-        grid.add(donorLastname, 1, 10);
+        grid.add(donorFirstName, 1, 9);
+        grid.add(donorLastName, 1, 10);
         grid.add(donorPhone, 1, 11);
 
         grid.add(donorEmail, 1, 12);
@@ -238,7 +320,7 @@ public class ModifyInventoryView extends View {
        		     @Override
        		     public void handle(ActionEvent e) {
        		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelModifyInventoryItem", null); 
+       		     	myModel.stateChangeRequest("CancelModifyInventory", null); 
             	  }
         	});
 		btnContainer.getChildren().add(cancelButton);
@@ -256,7 +338,35 @@ public class ModifyInventoryView extends View {
 		return vbox;
 	}
 
-	
+	private ListCell<ArticleType> makeArticleTypeCell() {
+        return new ListCell<ArticleType>() {
+        
+            @Override protected void updateItem(ArticleType item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText((String)item.getState("description"));
+                }
+                else {
+                    setText("");
+                }
+            }
+        };
+    }
+
+    private ListCell<Color> makeColorCell() {
+        return new ListCell<Color>() {
+        
+            @Override protected void updateItem(Color item, boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    setText((String)item.getState("description"));
+                }
+                else {
+                    setText("");
+                }
+            }
+        };
+    }
 
 	//--------------------------------------------------------------------------
 	public void updateState(String key, Object value) {
@@ -278,19 +388,29 @@ public class ModifyInventoryView extends View {
         Properties props = new Properties();
         String genderString = "";
         String sizeString = "";
+        String articleTypeId = "";
+        String color1Id = "";
+        String color2Id = "";
         String brandString = "";
         String noteString = "";
         String donorFirstNameString = "";
         String donorLastNameString = "";
         String donorPhoneString = "";
         String donorEmailString = "";
-        String receiverNetidString = "";
-        String receiverFirstNameString = "";
-        String receiverLastNameString = "";
-        String dateDonatedString = "";
-        String dateTakenString = "";
-
-
+       
+        genderString = gender.getText();
+        sizeString = size.getText();
+        articleTypeId = (String)articleType.getValue().getState("id");
+        color1Id = (String)color1.getValue().getState("id");
+        if (color2.getValue() != null) {
+            color2Id = (String)color2.getValue().getState("id");
+        }
+        brandString = brand.getText();
+        noteString = notes.getText();
+        donorFirstNameString = donorFirstName.getText();
+        donorLastNameString = donorLastName.getText();
+        donorPhoneString = donorPhone.getText();
+        donorEmailString = donorEmail.getText();
 
         if ((size.getText().isEmpty())) {
             statusLog.displayErrorMessage("Size cannot be empty");
@@ -312,7 +432,6 @@ public class ModifyInventoryView extends View {
             return false;
         }
 
-        donorPhoneString = donorPhone.getText();
         if (donorPhoneString != null) {
             if (!donorPhoneString.isEmpty()) {
                 if (isValidPhoneNumber(donorPhoneString)) {
@@ -324,7 +443,6 @@ public class ModifyInventoryView extends View {
             }
         }
 
-        donorEmailString = donorEmail.getText();
         if (donorEmailString != null) {
             if (!donorEmailString.isEmpty()) {
                 if (isValidEmail(donorEmailString)) {
@@ -336,36 +454,64 @@ public class ModifyInventoryView extends View {
             }
         }
 
-        brandString = brand.getText();
         if (brandString != null) {
             if (!brandString.isEmpty()) {
                 props.setProperty("brand", brandString);
             }
         }
 
-        noteString = notes.getText();
         if (noteString != null) {
             if (!noteString.isEmpty()) {
                 props.setProperty("notes", noteString);
             }
         }
 
-        donorFirstNameString = donorFirstname.getText();
         if (donorFirstNameString != null) {
             if (!donorFirstNameString.isEmpty()) {
                 props.setProperty("donorFirstName", donorFirstNameString);
             }
         }
 
-        donorLastNameString = donorLastname.getText();
         if (donorLastNameString != null) {
             if (!donorLastNameString.isEmpty()) {
                 props.setProperty("donorLastName", donorLastNameString);
             }
         }
 
+        if (noteString != null) {
+            if (!noteString.isEmpty()) {
+                props.setProperty("notes", noteString);
+            }
+        }
+
+        if (articleTypeId != null) {
+            if (!articleTypeId.isEmpty()) {
+                props.setProperty("articleTypeId", articleTypeId);
+            }
+        }
+        else {
+            statusLog.displayErrorMessage("Article Type cannot be empty");
+            return false;
+        }
+
+        if (color1Id != null) {
+            if (!color1Id.isEmpty()) {
+                props.setProperty("color1Id", color1Id);
+            }
+        }
+        else {
+            statusLog.displayErrorMessage("Color1 cannot be empty");
+            return false;
+        }
+
+        if (color2Id != null) {
+            if (!color2Id.isEmpty()) {
+                props.setProperty("color2Id", color2Id);
+            }
+        }
+
         statusLog.displayMessage("Success");
-        myModel.stateChangeRequest("Modify", props);
+        myModel.stateChangeRequest("DoModifyInventory", props);
 
         return true;
     }
@@ -400,6 +546,11 @@ public class ModifyInventoryView extends View {
 	{
 		statusLog.displayMessage(message);
 	}
+
+    public void displayErrorMessage(String message)
+    {
+        statusLog.displayErrorMessage(message);
+    }
 
 	/**
 	 * Clear error message
