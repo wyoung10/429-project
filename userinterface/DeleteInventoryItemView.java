@@ -6,6 +6,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,11 +36,14 @@ public class DeleteInventoryItemView extends View {
     public DeleteInventoryItemView(IModel wsc)
     {
         super(wsc, "DeleteInventoryItemView");
+        String css = getClass().getResource("Styles.css").toExternalForm();
+        getStylesheets().add(css);
 
         populateFields();
 
         VBox container = new VBox(10);
         container.setPadding(new Insets(15, 5, 5, 5));
+        container.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
         container.getChildren().add(createTitle());
         container.getChildren().add(createFormContent());
         container.getChildren().add(createStatusLog("                                            "));
