@@ -145,10 +145,11 @@ public class ArticleType extends EntityBase implements IView
 
 	public String toString()
 	{
-		setDependencies();
-		return "\nDescription: " + persistentState.getProperty("description") + "\n Barcode Prefix: " +
-			persistentState.getProperty("barcodePrefix") + "\n Alpha Code: " +
-			persistentState.getProperty("alphaCode");
+		return "Description: " + persistentState.getProperty("description") +
+                "; Barcode: " + persistentState.getProperty("barcodePrefix") +
+                "; Alpha Code: " + persistentState.getProperty("alphaCode") +
+                "; Status: " + persistentState.getProperty("status") +
+                "; ID: " + persistentState.getProperty("id");
 	}
 
 	//-----------------------------------------------------------------------------------

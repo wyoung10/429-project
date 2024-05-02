@@ -492,9 +492,9 @@ public class AddInventoryItemView extends View {
             insertProperties.setProperty("barcode", barcodeField.getText());
             insertProperties.setProperty("gender", genderField.getText());
             insertProperties.setProperty("size", sizeField.getText());
-            insertProperties.setProperty("articleTypeId", articleTypeId);
-            insertProperties.setProperty("color1Id", color1Id);
-            insertProperties.setProperty("color2Id", color2Id);
+            insertProperties.setProperty("articleTypeId", (String) articleType.getValue().getState("id"));
+            insertProperties.setProperty("color1Id", (String) color1.getValue().getState("id"));
+            insertProperties.setProperty("color2Id", (color2.getValue() == null) ? "" : (String) color2.getValue().getState("id"));
             insertProperties.setProperty("brand", brandField.getText());
             insertProperties.setProperty("notes", notesField.getText());
             insertProperties.setProperty("donorLastName", lnameField.getText());

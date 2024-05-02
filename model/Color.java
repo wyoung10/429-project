@@ -245,10 +245,11 @@ public class Color extends EntityBase {
     }
 
     public String toString() {
-        return "Description: " + persistentState.getProperty("description ") +
+        return "Description: " + persistentState.getProperty("description") +
                 "; Barcode: " + persistentState.getProperty("barcodePrefix") +
-                "; Alpha Code:" + persistentState.getProperty("alphaCode") +
-                ";status" + persistentState.getProperty("status");
+                "; Alpha Code: " + persistentState.getProperty("alphaCode") +
+                "; Status: " + persistentState.getProperty("status") +
+                "; ID: " + persistentState.getProperty("id");
     }
 
     //-----------------------------------------------------------------------------------
