@@ -114,12 +114,25 @@ public class DeleteInventoryItemView extends View {
                     // This should never happen.
                 }
             }
-            if (nextKey.equals("color1Id") || nextKey.equals("color2Id"))
+            if (nextKey.equals("color1Id"))
             {
                 try
                 {
                     model.Color temp = new model.Color(nextValue);
-                    nextKey = "color";
+                    nextKey = "color 1";
+                    nextValue = (String)temp.getState("description");
+                }
+                catch (Exception ex)
+                {
+                    // This should never happen.
+                }
+            }
+            if (nextKey.equals("color2Id"))
+            {
+                try
+                {
+                    model.Color temp = new model.Color(nextValue);
+                    nextKey = "color 2";
                     nextValue = (String)temp.getState("description");
                 }
                 catch (Exception ex)
