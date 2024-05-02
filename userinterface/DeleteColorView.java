@@ -127,21 +127,11 @@ public class DeleteColorView extends View {
         grid.add(prompt, 0, 0, 2, 1);
 
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
-
-		submitButton = new Button("Yes");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				clearErrorMessage();
-				myModel.stateChangeRequest("DoDeleteColor", null);
-			}
-		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
        		     @Override
        		     public void handle(ActionEvent e) {
@@ -149,10 +139,21 @@ public class DeleteColorView extends View {
        		     	myModel.stateChangeRequest("CancelDeleteColor", null); 
             	  }
         	});
-		btnContainer.getChildren().add(cancelButton);
+		buttons.getChildren().add(cancelButton);
+
+        Button submitButton = new Button("Yes");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				clearErrorMessage();
+				myModel.stateChangeRequest("DoDeleteColor", null);
+			}
+		});
+        buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

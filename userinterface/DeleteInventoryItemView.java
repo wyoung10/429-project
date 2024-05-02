@@ -135,24 +135,11 @@ public class DeleteInventoryItemView extends View {
             i++;
         }
 
-        HBox btnContainer = new HBox(100);
-        btnContainer.setAlignment(Pos.CENTER);
-
-        submitButton = new Button("Yes");
-        submitButton.setOnAction(new EventHandler<ActionEvent>()
-        {
-            @Override
-            public void handle(ActionEvent e)
-            {
-                clearErrorMessage();
-                myModel.stateChangeRequest("DeleteInventoryItem", null);
-            }
-        });
-        btnContainer.getChildren().add(submitButton);
-
-        cancelButton = new Button("Back");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>()
-        {
+        HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e)
             {
@@ -160,10 +147,22 @@ public class DeleteInventoryItemView extends View {
                 myModel.stateChangeRequest("CancelDeleteInventoryItem", null);
             }
         });
-        btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(cancelButton);
+
+        submitButton = new Button("Yes");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e)
+            {
+                clearErrorMessage();
+                myModel.stateChangeRequest("DeleteInventoryItem", null);
+            }
+        });
+        buttons.getChildren().add(submitButton);
 
         vbox.getChildren().add(grid);
-        vbox.getChildren().add(btnContainer);
+        vbox.getChildren().add(buttons);
 
         return vbox;
     }

@@ -300,30 +300,30 @@ public class ModifyInventoryView extends View {
 
         grid.add(donorEmail, 1, 12);
 
+        HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
+            @Override
+            public void handle(ActionEvent e) {
+                clearErrorMessage();
+                myModel.stateChangeRequest("CancelModifyInventory", null); 
+            }
+        });
+		buttons.getChildren().add(cancelButton);
 
-		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+        submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage();
 				processSubmit();
 			}
 		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelModifyInventory", null); 
-            	  }
-        	});
-		btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 		
         ScrollPane sp = new ScrollPane(grid);
         sp.setMaxHeight(500);
@@ -332,7 +332,7 @@ public class ModifyInventoryView extends View {
         statusLog = new MessageView("");
 
 		vbox.getChildren().add(sp);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
         vbox.getChildren().add(statusLog);
 	
 		return vbox;

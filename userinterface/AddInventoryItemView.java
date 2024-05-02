@@ -62,6 +62,9 @@ public class AddInventoryItemView extends View {
     protected TextField colorDescField;
     protected TextField color2DesField;
 
+    protected Button cancelButton;
+    protected Button submitButton;
+
     protected String articleTypeId;
 
     protected String color1Id;
@@ -501,12 +504,24 @@ public class AddInventoryItemView extends View {
 
         //====BUTTONS=====
         //Setup separate Hbox for submit and cancel button
+
         HBox buttons = new HBox(10);
-        buttons.setAlignment(Pos.BOTTOM_CENTER);
+        buttons.setAlignment(Pos.CENTER);
+        cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e){
+                clearErrorMessage();
+                myModel.stateChangeRequest("CancelAddInventoryItem", null);
+            }
+        });
+        buttons.getChildren().add(cancelButton);
 
         //-----Submit Button------
-        Button subButton = new Button("Submit");
-        subButton.setOnAction(new EventHandler<ActionEvent>() {
+        submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent e){
@@ -521,19 +536,7 @@ public class AddInventoryItemView extends View {
                 
             }
         });
-        buttons.getChildren().add(subButton);
-
-        //-----Cancel Button-----
-        Button cancelButton = new Button("Cancel");
-        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-            
-            @Override
-            public void handle(ActionEvent e){
-                clearErrorMessage();
-                myModel.stateChangeRequest("CancelAddInventoryItem", null);
-            }
-        });
-        buttons.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 
         //Add form and buttons
         form.getChildren().add(grid);
