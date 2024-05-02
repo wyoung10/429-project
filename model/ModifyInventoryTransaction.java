@@ -119,7 +119,7 @@ public class ModifyInventoryTransaction extends Transaction{
                     createAndShowModifyInventoryView();
                 } else {
                     System.out.println("barcode: " + barcode + " not found");
-                    transactionStatusMessage = "No Inventory Item found";
+                    transactionStatusMessage = "ERROR: No inventory item found with barcode: " + ((Properties)value).getProperty("barcode");
                 }
                 break;
             case "DoModifyInventory":
