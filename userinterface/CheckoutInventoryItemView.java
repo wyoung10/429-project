@@ -98,18 +98,9 @@ public class CheckoutInventoryItemView extends View {
 	protected void getInventoryItemData() {
 		barcode.setText((String)(myModel.getState("barcode")));
         gender.setText((String)(myModel.getState("gender")));
-        articleType.setText(
-			"("+(String)(myModel.getState("articleTypeBarcodePrefix"))+") "
-			+ (String)(myModel.getState("articleTypeDescription"))
-		);
-        color1.setText(
-			"("+(String)(myModel.getState("color1BarcodePrefix"))+") "
-			+ (String)(myModel.getState("color1Description"))
-		);
-        color2.setText(
-			"("+(String)(myModel.getState("color2BarcodePrefix"))+") "
-			+ (String)(myModel.getState("color2Description"))
-		);
+        articleType.setText((String)(myModel.getState("articleTypeDescription")));
+        color1.setText((String)(myModel.getState("color1Description")));
+        color2.setText((String)(myModel.getState("color2Description")));
         size.setText((String)(myModel.getState("size")));
         brand.setText((String)(myModel.getState("brand")));
         notes.setText((String)(myModel.getState("notes")));
