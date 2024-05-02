@@ -145,32 +145,33 @@ public class ModifyColorView extends View {
 		grid.add(alphaCodeLabel, 0, 3);
         grid.add(alphaCode, 1, 3);
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
-		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				clearErrorMessage();
+				myModel.stateChangeRequest("CancelModifyColor", null); 
+			}
+		});
+		buttons.getChildren().add(cancelButton);
+
+        submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage();
 				processSubmit();
 			}
 		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelModifyColor", null); 
-            	  }
-        	});
-		btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

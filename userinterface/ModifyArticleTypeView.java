@@ -155,33 +155,33 @@ public class ModifyArticleTypeView extends View {
         grid.add(alphaCode, 1, 2);
         grid.add(description, 1, 3);
 
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
+			@Override
+			public void handle(ActionEvent e) {
+				clearErrorMessage();
+				myModel.stateChangeRequest("CancelModifyArticleType", null); 
+			}
+		});
+		buttons.getChildren().add(cancelButton);
 
-		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+        submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage();
 				processSubmit();
 			}
 		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelModifyArticleType", null); 
-            	  }
-        	});
-		btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

@@ -208,8 +208,31 @@ public class ArticleTypeCollectionView extends View
 		scrollPane.setPrefSize(372, 150);
 		scrollPane.setContent(tableOfArticleTypes);
 
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent e) {
+			/**
+			 * Process the Cancel button.
+			 * The ultimate result of this action is that the transaction will tell the teller to
+			 * to switch to the transaction choice view. BUT THAT IS NOT THIS VIEW'S CONCERN.
+			 * It simply tells its model (controller) that the transaction was canceled, and leaves it
+			 * to the model to decide to tell the teller to do the switch back.
+			*/
+			//----------------------------------------------------------
+			clearErrorMessage();
+			myModel.stateChangeRequest("CancelTransaction", null); 
+			}
+		});
+		buttons.getChildren().add(cancelButton);
+
 		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+		submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+		submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage(); 
@@ -219,33 +242,11 @@ public class ArticleTypeCollectionView extends View
 				getEntryTableModelValues();
 			}
 		});
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-					/**
-					 * Process the Cancel button.
-					 * The ultimate result of this action is that the transaction will tell the teller to
-					 * to switch to the transaction choice view. BUT THAT IS NOT THIS VIEW'S CONCERN.
-					 * It simply tells its model (controller) that the transaction was canceled, and leaves it
-					 * to the model to decide to tell the teller to do the switch back.
-			 		*/
-					//----------------------------------------------------------
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelTransaction", null); 
-            	  }
-        	});
-
-		HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
-		btnContainer.getChildren().add(submitButton);
-		btnContainer.getChildren().add(cancelButton);
+		buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
 		vbox.getChildren().add(scrollPane);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

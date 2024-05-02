@@ -22,6 +22,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -70,10 +73,13 @@ public class CheckoutInventoryItemView extends View {
 	public CheckoutInventoryItemView(IModel wsc)
 	{
 		super(wsc, "CheckoutInventoryItemView");
+		String css = getClass().getResource("Styles.css").toExternalForm();
+        getStylesheets().add(css);
 
 		// create a container for showing the contents
 		VBox container = new VBox(10);
 		container.setPadding(new Insets(15, 5, 5, 5));
+		container.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
 		// create our GUI components, add them to this panel
 		container.getChildren().add(createTitle());
@@ -222,32 +228,32 @@ public class CheckoutInventoryItemView extends View {
 		grid.add(receiverFirstNameLabel, 0, 16);
         grid.add(receiverFirstName, 1, 16);
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
-
-		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent e) {
-				clearErrorMessage();
-				processSubmit();
-			}
-		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
        		     @Override
        		     public void handle(ActionEvent e) {
        		     	clearErrorMessage();
        		     	myModel.stateChangeRequest("CancelCheckoutInventoryItem", null); 
             	  }
         	});
-		btnContainer.getChildren().add(cancelButton);
+		buttons.getChildren().add(cancelButton);
+
+		submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				clearErrorMessage();
+				processSubmit();
+			}
+		});
+        buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

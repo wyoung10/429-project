@@ -22,6 +22,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -53,12 +56,15 @@ public class ConfirmDeleteArticleView extends View {
 	public ConfirmDeleteArticleView(IModel wsc)
 	{
 		super(wsc, "ConfirmDeleteArticleView");
+		String css = getClass().getResource("Styles.css").toExternalForm();
+        getStylesheets().add(css);
 
 		populateFields(); //sets description to selected article type
 
 		// create a container for showing the contents
 		VBox container = new VBox(10);
 		container.setPadding(new Insets(15, 5, 5, 5));
+		container.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
 		// create our GUI components, add them to this panel
 		container.getChildren().add(createTitle());
@@ -117,12 +123,23 @@ public class ConfirmDeleteArticleView extends View {
         prompt.setFill(javafx.scene.paint.Color.BLACK);
         grid.add(prompt, 0, 0, 2, 1);
 
+		HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
+			@Override
+			public void handle(ActionEvent e) {
+				clearErrorMessage();
+				myModel.stateChangeRequest("CancelDeleteArticleType", null); 
+			}
+		});
+		buttons.getChildren().add(cancelButton);
 
-		submitButton = new Button("Yes");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+        Button submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage();
@@ -132,21 +149,10 @@ public class ConfirmDeleteArticleView extends View {
 				//myModel.stateChangeRequest("CancelDeleteArticleType", null);
 			}
 		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelDeleteArticleType", null); 
-            	  }
-        	});
-		btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 		
 		vbox.getChildren().add(grid);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
 	
 		return vbox;
 	}

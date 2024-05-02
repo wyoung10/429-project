@@ -26,6 +26,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -84,10 +87,13 @@ public class ModifyInventoryView extends View {
 	public ModifyInventoryView(IModel wsc)
 	{
 		super(wsc, "ModifyInventoryView");
+        String css = getClass().getResource("Styles.css").toExternalForm();
+        getStylesheets().add(css);
 
 		// create a container for showing the contents
 		VBox container = new VBox(10);
 		container.setPadding(new Insets(15, 5, 5, 5));
+        container.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.LIGHTYELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 
         getComboBoxData();
 
@@ -300,30 +306,30 @@ public class ModifyInventoryView extends View {
 
         grid.add(donorEmail, 1, 12);
 
+        HBox buttons = new HBox(10);
+        buttons.setAlignment(Pos.CENTER);
+        Button cancelButton = new Button("Back");
+        cancelButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        cancelButton.setOnAction(new EventHandler<ActionEvent>() {
 
-        HBox btnContainer = new HBox(100);
-		btnContainer.setAlignment(Pos.CENTER);
+            @Override
+            public void handle(ActionEvent e) {
+                clearErrorMessage();
+                myModel.stateChangeRequest("CancelModifyInventory", null); 
+            }
+        });
+		buttons.getChildren().add(cancelButton);
 
-		submitButton = new Button("Submit");
- 		submitButton.setOnAction(new EventHandler<ActionEvent>() {
+        submitButton = new Button("Submit");
+        submitButton.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        submitButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
 				clearErrorMessage();
 				processSubmit();
 			}
 		});
-        btnContainer.getChildren().add(submitButton);
-
-		cancelButton = new Button("Back");
- 		cancelButton.setOnAction(new EventHandler<ActionEvent>() {
-
-       		     @Override
-       		     public void handle(ActionEvent e) {
-       		     	clearErrorMessage();
-       		     	myModel.stateChangeRequest("CancelModifyInventory", null); 
-            	  }
-        	});
-		btnContainer.getChildren().add(cancelButton);
+        buttons.getChildren().add(submitButton);
 		
         ScrollPane sp = new ScrollPane(grid);
         sp.setMaxHeight(500);
@@ -332,7 +338,7 @@ public class ModifyInventoryView extends View {
         statusLog = new MessageView("");
 
 		vbox.getChildren().add(sp);
-		vbox.getChildren().add(btnContainer);
+		vbox.getChildren().add(buttons);
         vbox.getChildren().add(statusLog);
 	
 		return vbox;
